@@ -1,0 +1,71 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-kapt'
+
+android {
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+
+    compileSdkVersion globalConfiguration["androidCompileSdkVersion"]
+    buildToolsVersion globalConfiguration["androidBuildToolsVersion"]
+
+    defaultConfig {
+        minSdkVersion globalConfiguration["androidMinSdkVersion"]
+        targetSdkVersion globalConfiguration["androidTargetSdkVersion"]
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            aidl.srcDirs = ['src/main/aidl']
+        }
+    }
+}
+
+dependencies {
+    def appDependencies = rootProject.ext.appDependencies
+    def appTestDependencies = rootProject.ext.appTestDependencies
+
+    implementation project(':data')
+    implementation project(':domain')
+    implementation project(':omfm')
+
+    implementation appDependencies.appCompatV7
+    implementation appDependencies.supportDesign
+    implementation appDependencies.cardView
+    implementation appDependencies.supportRecyclerView
+    implementation appDependencies.androidSupportV4
+    implementation appDependencies.constraintLayout
+
+    //Youtube
+    implementation appDependencies.youtubeExtractor
+
+    //DB
+    implementation appDependencies.room
+
+    //Async
+    implementation appDependencies.coroutines
+    implementation appDependencies.coroutinesAndroid
+
+    //Image loading
+    implementation appDependencies.glide
+
+    //Dagger di
+    implementation appDependencies.dagger
+    implementation appDependencies.daggerSupport
+    kapt appDependencies.daggerProcessor
+    kapt appDependencies.daggerCompiler
+
+    //Lifecycle
+    implementation appDependencies.lifecycle
+    kapt appDependencies.lifecycleCompiler
+}

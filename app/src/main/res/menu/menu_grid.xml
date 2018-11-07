@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="justbucket.videolib.MainActivity">
+    <item
+        android:id="@+id/action_change_mode"
+        android:icon="@drawable/arrow_expand_all"
+        android:title="@string/change_mode"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_filter_videos"
+        android:icon="@drawable/ic_filter"
+        android:title="@string/filter_videos"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/player_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VideoActivity">
+
+    <!-- The primary full-screen pres. This can be replaced with whatever pres
+         is needed to present your content, e.g. VideoPres, SurfaceView,
+         TextureView, etc. -->
+
+
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+    <VideoView
+        android:id="@+id/fullscreen_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:keepScreenOn="true" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/fullscreen_content_controls"
+            style="?metaButtonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/black_overlay"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_view_current"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Current" />
+
+            <SeekBar
+                android:id="@+id/seek_bar"
+                android:layout_width="@dimen/zero_dp"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="0"
+                app:layout_constraintEnd_toStartOf="@+id/text_view_total"
+                app:layout_constraintStart_toEndOf="@+id/text_view_current"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/text_view_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Total" />
+
+            <ImageButton
+                android:id="@+id/image_button_previous"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/content_description"
+                android:tint="@android:color/transparent"
+                app:layout_constraintEnd_toStartOf="@+id/image_button_play_pause"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seek_bar"
+                app:srcCompat="@android:drawable/ic_media_previous" />
+
+            <ImageButton
+                android:id="@+id/image_button_play_pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/content_description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seek_bar"
+                app:srcCompat="@android:drawable/ic_media_pause" />
+
+            <ImageButton
+                android:id="@+id/image_button_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/content_description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/image_button_play_pause"
+                app:layout_constraintTop_toTopOf="@+id/image_button_play_pause"
+                app:srcCompat="@android:drawable/ic_media_next" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </FrameLayout>
+</FrameLayout>

@@ -1,0 +1,112 @@
+ext {
+    //Android
+    androidBuildToolsVersion = '28.0.3'
+    androidMinSdkVersion = 23
+    androidTargetSdkVersion = 25
+    androidCompileSdkVersion = 28
+
+    //Libraries
+    supportLibraryVersion = '28.0.0'
+    constraintLayoutVersion = '1.1.2'
+    javaxInjectVersion = '1'
+    retrofitVersion = '2.4.0'
+    gsonVersion = '2.8.5'
+    glideVersion = '4.8.0'
+    archCompVersion = '1.1.1'
+    roomVersion = '1.1.1'
+    coroutinesVersion = '1.0.0'
+    youtubeExtractorVersion = 'master-SNAPSHOT'
+    omfmVersion = '1.1.1'
+    lifecycleVersion = '1.1.1'
+    daggerVersion = '2.19'
+    kodeinVersion = '5.2.0'
+
+    //Testing
+    jUnitVersion = '4.12'
+    assertJVersion = '3.8.0'
+    mockitoKotlinVersion = '2.0.0-RC1'
+    espressoVersion = '3.0.2'
+    robolectricVersion = '3.4.2'
+    mockitoVersion = '2.21.0'
+    mockitoAndroidVersion = '2.21.0'
+    androidSupportRunnerVersion = '1.0.2'
+    androidSupportRulesVersion = '1.0.0'
+    dexmakerMockitoversion = '2.2.0'
+    runnerVersion = '0.5'
+
+    domainDependencies = [
+            kotlin     : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${ext.kotlin_version}",
+            coroutines : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
+            javaxInject: "javax.inject:javax.inject:${javaxInjectVersion}"
+    ]
+
+    domainTestDependencies = [
+            junit  : "junit:junit:${jUnitVersion}",
+            mockito: "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}"
+    ]
+
+    dataDependencies = [
+            kotlin           : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${ext.kotlin_version}",
+            coroutines       : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
+            room             : "android.arch.persistence.room:runtime:$roomVersion",
+            roomAP           : "android.arch.persistence.room:compiler:$roomVersion",
+            roomRX           : "android.arch.persistence.room:rxjava2:$roomVersion",
+            retrofit         : "com.squareup.retrofit2:retrofit:$retrofitVersion",
+            retrofitConverter: "com.squareup.retrofit2:converter-gson:$retrofitVersion",
+            gson             : "com.google.code.gson:gson:$gsonVersion",
+            glide            : "com.github.bumptech.glide:glide:$glideVersion",
+            glideAP          : "com.github.bumptech.glide:compiler:$glideVersion",
+            javaxInject      : "javax.inject:javax.inject:${javaxInjectVersion}",
+    ]
+
+    dataTestDependencies = [
+            junit         : "junit:junit:${jUnitVersion}",
+            mockito       : "org.mockito:mockito-core:${mockitoVersion}",
+            mockitoKotlin : "com.nhaarman.mockitokotlin2:mockito-kotlin:${mockitoKotlinVersion}",
+            mockitoAndroid: "org.mockito:mockito-android:${mockitoAndroidVersion}",
+            roomTesting   : "android.arch.core:core-testing:$roomVersion",
+            supportRunner : "com.android.support.test:runner:${androidSupportRunnerVersion}",
+            espresso      : "com.android.support.test.espresso:espresso-core:${espressoVersion}"
+    ]
+
+    appDependencies = [
+            kotlin             : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${ext.kotlin_version}",
+            glide              : "com.github.bumptech.glide:glide:${glideVersion}",
+            coroutines         : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
+            coroutinesAndroid  : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion",
+            androidSupportV4   : "com.android.support:support-v4:${supportLibraryVersion}",
+            cardView           : "com.android.support:cardview-v7:${supportLibraryVersion}",
+            appCompatV7        : "com.android.support:appcompat-v7:${supportLibraryVersion}",
+            supportRecyclerView: "com.android.support:recyclerview-v7:${supportLibraryVersion}",
+            constraintLayout   : "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}",
+            supportDesign      : "com.android.support:design:${supportLibraryVersion}",
+            roomRuntime        : "android.arch.persistence.room:runtime:${archCompVersion}",
+            roomCompiler       : "android.arch.persistence.room:compiler:${archCompVersion}",
+            youtubeExtractor   : "com.github.HaarigerHarald:android-youtubeExtractor:${youtubeExtractorVersion}",
+            omfm               : "com.github.dekoservidoni:omfm:${omfmVersion}",
+            room               : "android.arch.persistence.room:runtime:$roomVersion",
+            lifecycle          : "android.arch.lifecycle:extensions:$lifecycleVersion",
+            lifecycleCompiler  : "android.arch.lifecycle:compiler:$lifecycleVersion",
+            dagger             : "com.google.dagger:dagger-android:$daggerVersion",
+            daggerSupport      : "com.google.dagger:dagger-android-support:$daggerVersion",
+            daggerProcessor    : "com.google.dagger:dagger-android-processor:$daggerVersion",
+            daggerCompiler     : "com.google.dagger:dagger-compiler:$daggerVersion"
+    ]
+
+    appTestDependencies = [
+            junit          : "junit:junit:${jUnitVersion}",
+            kotlinJUnit    : "org.jetbrains.kotlin:kotlin-test-junit:${ext.kotlin_version}",
+            assertj        : "org.assertj:assertj-core:${assertJVersion}",
+            mockito        : "com.nhaarman:mockito-kotlin:${mockitoKotlinVersion}",
+            supportRunner  : "com.android.support.test:runner:${androidSupportRunnerVersion}",
+            supportRules   : "com.android.support.test:rules:${androidSupportRulesVersion}",
+            mockitoAndroid : "org.mockito:mockito-android:${mockitoAndroidVersion}",
+            espressoCore   : "com.android.support.test.espresso:espresso-core:${espressoVersion}",
+            espressoIntents: "com.android.support.test.espresso:espresso-intents:${espressoVersion}",
+            espressoContrib: "com.android.support.test.espresso:espresso-contrib:${espressoVersion}",
+            androidRunner  : "com.android.support.test:runner:${runnerVersion}",
+            androidRules   : "com.android.support.test:rules:${runnerVersion}"
+    ]
+
+
+}

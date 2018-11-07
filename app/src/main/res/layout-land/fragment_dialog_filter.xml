@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/side_nav_bar">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.65" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/diafrag_recycler_tags"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="vertical"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout" />
+
+
+    <TextView
+        android:id="@+id/diafrag_text_no_tags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_tags"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/diafrag_recycler_tags"
+        app:layout_constraintEnd_toEndOf="@+id/diafrag_recycler_tags"
+        app:layout_constraintStart_toStartOf="@+id/diafrag_recycler_tags"
+        app:layout_constraintTop_toTopOf="@+id/diafrag_recycler_tags" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/diafrag_text_with_tags"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:text="@string/with"
+            app:layout_constraintBottom_toBottomOf="@+id/diafrag_toggle"
+            app:layout_constraintEnd_toStartOf="@+id/diafrag_toggle"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/diafrag_toggle" />
+
+        <ToggleButton
+            android:id="@+id/diafrag_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/margin_small"
+            android:checked="false"
+            android:textOff="@string/any"
+            android:textOn="@string/all"
+            android:theme="@style/MyToggle"
+            app:layout_constraintBottom_toTopOf="@+id/diafrag_recycler_sources"
+            app:layout_constraintEnd_toStartOf="@+id/diafrag_text_tags"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/diafrag_text_with_tags"
+            app:layout_constraintTop_toBottomOf="@+id/diafrag_text_select" />
+
+        <TextView
+            android:id="@+id/diafrag_text_tags"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:gravity="center"
+            android:text="@string/of_tags"
+            app:layout_constraintBottom_toBottomOf="@+id/diafrag_toggle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/diafrag_toggle"
+            app:layout_constraintTop_toTopOf="@+id/diafrag_toggle" />
+
+        <TextView
+            android:id="@+id/diafrag_text_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:text="@string/select_tags"
+            app:layout_constraintBottom_toTopOf="@+id/diafrag_toggle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.52"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <TextView
+            android:id="@+id/diafrag_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:text="@string/with"
+            app:layout_constraintBottom_toBottomOf="@+id/diafrag_recycler_sources"
+            app:layout_constraintEnd_toStartOf="@+id/diafrag_recycler_sources"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/diafrag_recycler_sources"
+            app:layout_constraintVertical_bias="0.615" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/diafrag_recycler_sources"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:orientation="horizontal"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/diafrag_edit_search"
+            app:layout_constraintEnd_toStartOf="@+id/diafrag_text_sources"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/diafrag_text"
+            app:layout_constraintTop_toBottomOf="@+id/diafrag_toggle"
+            tools:itemCount="2"
+            tools:listItem="@layout/recycler_source"
+            tools:listitem="@layout/recycler_source" />
+
+        <TextView
+            android:id="@+id/diafrag_text_sources"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sources"
+            app:layout_constraintBottom_toBottomOf="@+id/diafrag_recycler_sources"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/diafrag_recycler_sources"
+            app:layout_constraintTop_toTopOf="@+id/diafrag_recycler_sources"
+            app:layout_constraintVertical_bias="0.714" />
+
+        <EditText
+            android:id="@+id/diafrag_edit_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:ems="10"
+            android:hint="@string/name"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/diafrag_text_with_name"
+            app:layout_constraintTop_toBottomOf="@+id/diafrag_recycler_sources" />
+
+        <TextView
+            android:id="@+id/diafrag_text_with_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:text="@string/with"
+            app:layout_constraintBottom_toBottomOf="@+id/diafrag_edit_search"
+            app:layout_constraintEnd_toStartOf="@+id/diafrag_edit_search"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/diafrag_edit_search" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>
