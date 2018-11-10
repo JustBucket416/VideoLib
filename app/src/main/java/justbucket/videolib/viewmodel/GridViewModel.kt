@@ -68,10 +68,10 @@ class GridViewModel @Inject constructor(
                 createFlowableSubscriber(liveData) { list ->
                     list.map {
                         val videoPres = videoMapper.mapToPresentation(it)
-                        if (selectedIdsList.contains(it.id)) {
+                        /*if (selectedIdsList.contains(it.id)) {
                             videoPres.selected = true
                             selectedIdsList.remove(it.id)
-                        }
+                        }*/
                         videoPres
                     }
                 },
@@ -152,13 +152,19 @@ class GridViewModel @Inject constructor(
     }
 
     /**
-     * Requests the domain to delete a tag
+     * Requests the domain to delete some tags
      *
-     * @param text - a tag to delete
+     * @param tags - tags to delete
      */
-    fun deleteTag(text: String) {
-        deleteTag.execute(createCompletableObserver { },
-                params = DeleteTag.Params.createParams(text))
+    fun deleteTags(tags: List<String>) {
+        tags.forEachIndexed { index, string ->
+            deleteTag.execute(createCompletableObserver {
+                lastFilter.tags.remove(string)
+                if (index == tags.size - 1) fetchVideos(lastFilter)
+            },
+                    params = DeleteTag.Params.createParams(string))
+        }
+
     }
 
     fun savePositions(list: List<VideoPres>) {
@@ -170,6 +176,10 @@ class GridViewModel @Inject constructor(
     private fun saveDetailsSwitchState() {
         saveDetailsState.execute(createCompletableObserver { },
                 params = SaveDetailsState.Params.createParams(switchMode))
+    }
+
+    fun getFilter(): FilterPres {
+        return lastFilter
     }
 
 }

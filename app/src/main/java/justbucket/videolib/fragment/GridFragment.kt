@@ -1,5 +1,6 @@
 package justbucket.videolib.fragment
 
+import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.DialogInterface
@@ -37,7 +38,6 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
 
     companion object {
         private const val RECYCLER_LAYOUT_STATE_KEY = "recycler-state-key"
-        private const val VIDEO_LIST_KEY = "video-list-key"
         private const val ACTION_STATE_KEY = "action-state-key"
         private const val FILTER_DIALOG_TAG = "filter"
         private const val ACTION_DIALOG_TAG = "action"
@@ -67,9 +67,12 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                         AlertDialog.Builder(requireContext()).myDialog(getString(R.string.remove_tags),
                                 getString(R.string.cancel),
                                 getString(R.string.remove)) { dialog, _ ->
-                            for ((index, bool) in checkDelete.withIndex()) {
-                                if (bool) viewModel.deleteTag(tags[index])
-                            }
+                            val tempString = ""
+                            val selectedTagList: List<String> = checkDelete.mapIndexed { index, check ->
+                                if (check) tags[index]
+                                else tempString
+                            }.filter { it != tempString }
+                            viewModel.deleteTags(selectedTagList)
                             dialog.dismiss()
                         }
                                 .setMultiChoiceItems(tags.toTypedArray(), checkDelete) { _, which, isChecked ->
@@ -184,15 +187,17 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                 true
             }
             R.id.action_filter_videos -> {
-                val filterFragment = FilterFragment.newInstance()
+                val filterFragment = FilterFragment.newInstance(viewModel.getFilter())
                 filterFragment.show(childFragmentManager, FILTER_DIALOG_TAG)
                 childFragmentManager.executePendingTransactions()
                 filterFragment.dialog.setOnDismissListener {
-                    with((filterFragment as FilterProvider).getFilter()) {
-                        viewModel.saveFilter(this)
-                        viewModel.fetchVideos(this)
+                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+                        with((filterFragment as FilterProvider).getFilter()) {
+                            viewModel.saveFilter(this)
+                            viewModel.fetchVideos(this)
+                        }
+                        filterFragment.dismissAllowingStateLoss()
                     }
-                    filterFragment.dismissAllowingStateLoss()
                 }
                 true
             }
@@ -247,8 +252,8 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
 
     fun isInActionMode() = actionModeHelper?.isInActionMode() == true
 
-    fun setActionItemListener(onActionItemClickListener: ActionModeHelper.OnActionItemClickListener) {
-        actionModeHelper?.setActionClickListener(onActionItemClickListener)
+    fun setActionItemListener(onActionEventListener: ActionModeHelper.OnActionEventListener) {
+        actionModeHelper?.setActionClickListener(onActionEventListener)
     }
 
     fun chooseTags(items: ArrayList<VideoPres>) {

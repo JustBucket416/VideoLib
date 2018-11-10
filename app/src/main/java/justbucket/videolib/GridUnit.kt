@@ -26,7 +26,7 @@ class GridUnit(private val gridFragment: GridFragment,
                width: Int,
                height: Int) : VideoGridAdapter.ViewHolderListener {
     private val layoutManager = gridRecyclerView.layoutManager as GridLayoutManager
-    private val onActionItemClickListener = OnActionItemClickListenerImpl()
+    private val onActionItemClickListener = OnActionEventListenerImpl()
     private val enterTransitionStarted = AtomicBoolean()
     private val items = arrayListOf<VideoPres>()
     private val adapter: VideoGridAdapter = VideoGridAdapter(
@@ -125,7 +125,7 @@ class GridUnit(private val gridFragment: GridFragment,
         }
     }
 
-    inner class OnActionItemClickListenerImpl : ActionModeHelper.OnActionItemClickListener {
+    inner class OnActionEventListenerImpl : ActionModeHelper.OnActionEventListener {
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem) {
 
             when (item.itemId) {
@@ -138,6 +138,10 @@ class GridUnit(private val gridFragment: GridFragment,
                 }
                 R.id.menu_select_tags -> gridFragment.chooseTags(items)
             }
+        }
+
+        override fun onActionModeDestroyed() {
+            updateAllItemsChecked(false)
         }
     }
 

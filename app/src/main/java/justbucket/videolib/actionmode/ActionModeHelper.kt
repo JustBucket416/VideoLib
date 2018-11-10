@@ -10,7 +10,7 @@ import justbucket.videolib.R
 class ActionModeHelper(private val activity: AppCompatActivity) : ActionMode.Callback {
 
     private var mode: ActionMode? = null
-    private var onActionItemClickListener: OnActionItemClickListener? = null
+    private var onActionEventListener: OnActionEventListener? = null
 
     fun startActionMode() {
         activity.startSupportActionMode(this)
@@ -27,12 +27,12 @@ class ActionModeHelper(private val activity: AppCompatActivity) : ActionMode.Cal
         activity.window?.statusBarColor = ContextCompat.getColor(activity, R.color.colorPrimaryDark)
     }
 
-    fun setActionClickListener(onActionItemClickListener: OnActionItemClickListener) {
-        this.onActionItemClickListener = onActionItemClickListener
+    fun setActionClickListener(onActionEventListener: OnActionEventListener) {
+        this.onActionEventListener = onActionEventListener
     }
 
     override fun onActionItemClicked(actionMode: ActionMode, item: MenuItem): Boolean {
-        onActionItemClickListener?.onActionItemClicked(actionMode, item)
+        onActionEventListener?.onActionItemClicked(actionMode, item)
         return true
     }
 
@@ -47,12 +47,15 @@ class ActionModeHelper(private val activity: AppCompatActivity) : ActionMode.Cal
     }
 
     override fun onDestroyActionMode(actionMode: ActionMode) {
+        onActionEventListener?.onActionModeDestroyed()
         mode = null
-        onActionItemClickListener = null
+        onActionEventListener = null
     }
 
-    interface OnActionItemClickListener {
+    interface OnActionEventListener {
 
         fun onActionItemClicked(mode: ActionMode, item: MenuItem)
+
+        fun onActionModeDestroyed()
     }
 }

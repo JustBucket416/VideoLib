@@ -17,12 +17,18 @@ import kotlinx.android.synthetic.main.fragment_dialog_filter.*
 /**
  * A [DialogFragment] subclass that shows the video filtering UI
  */
-class FilterFragment : InjectedDialogFragment<Triple<List<String>, List<Int>, FilterPres>, FilterViewModel>(),
+class FilterFragment : InjectedDialogFragment<Pair<List<String>, List<Int>>, FilterViewModel>(),
         GridFragment.FilterProvider {
 
     companion object {
-        fun newInstance(): FilterFragment {
-            return FilterFragment()
+        private const val FILTER_KEY = "filter-key"
+
+        fun newInstance(filterPres: FilterPres): FilterFragment {
+            return FilterFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(FILTER_KEY, filterPres)
+                }
+            }
         }
     }
 
@@ -42,13 +48,17 @@ class FilterFragment : InjectedDialogFragment<Triple<List<String>, List<Int>, Fi
         diafrag_toggle.setOnCheckedChangeListener { _, isChecked ->
             filterPres.isAllAnyCheck = isChecked
         }
+
+        arguments?.run {
+            filterPres = getParcelable(FILTER_KEY) ?: return
+        }
     }
 
-    override fun setupForSuccess(data: Triple<List<String>, List<Int>, FilterPres>?) {
-        val (tags: List<String>, sources: List<Int>, filter: FilterPres) = data!!
-        filterPres = filter
-        diafrag_toggle.isChecked = filter.isAllAnyCheck
-        diafrag_edit_search.setText(filter.text)
+    override fun setupForSuccess(data: Pair<List<String>, List<Int>>?) {
+        if (data == null || !this::filterPres.isInitialized) return
+        val (tags: List<String>, sources: List<Int>) = data
+        diafrag_toggle.isChecked = filterPres.isAllAnyCheck
+        diafrag_edit_search.setText(filterPres.text)
         showTags(tags)
         showSources(sources)
     }
