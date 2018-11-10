@@ -39,6 +39,7 @@ class GridUnit(private val gridFragment: GridFragment,
 
     init {
         gridRecyclerView.adapter = adapter
+        gridFragment.setActionItemListener(onActionItemClickListener)
     }
 
     override fun onLoadCompleted(view: ImageView, adapterPosition: Int) {
@@ -93,7 +94,6 @@ class GridUnit(private val gridFragment: GridFragment,
     }
 
     override fun onItemLongClicked() {
-        gridFragment.setActionItemListener(onActionItemClickListener)
         gridFragment.startActionMode()
     }
 
