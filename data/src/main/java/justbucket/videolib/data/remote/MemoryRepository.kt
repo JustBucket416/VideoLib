@@ -1,7 +1,6 @@
 package justbucket.videolib.data.remote
 
-import justbucket.videolib.domain.exception.Failure
-import justbucket.videolib.domain.functional.Either
+import io.reactivex.Single
 
 /**
  * A repository interface which loads videos from local memory
@@ -15,5 +14,5 @@ interface MemoryRepository {
      *
      * @return a video entity
      */
-    suspend fun loadFromMemory(path: String, tags: List<String>): Either<Failure, Boolean>
+    fun loadFromMemory(path: String, tags: List<String>): Single<Boolean>
 }

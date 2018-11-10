@@ -1,5 +1,7 @@
 package justbucket.videolib.domain.repository
 
+import io.reactivex.Single
+
 /**
  * A source repository interface
  */
@@ -10,6 +12,6 @@ interface SourceRepository {
      *
      * @return list that contains all sources
      */
-    fun getAllSources(): List<Int>
+    fun getAllSources(): Single<List<Int>>
 
 }

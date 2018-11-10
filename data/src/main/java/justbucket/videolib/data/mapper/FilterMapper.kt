@@ -6,14 +6,14 @@ import javax.inject.Inject
 
 class FilterMapper @Inject constructor() : Mapper<Filter, FilterEntity> {
 
-    override suspend fun mapToDomain(data: FilterEntity): Filter {
+    override fun mapToDomain(data: FilterEntity): Filter {
         return Filter(data.text,
                 data.sources,
                 data.allAnyCheck,
                 data.tags)
     }
 
-    override suspend fun mapToData(domain: Filter): FilterEntity {
+    override fun mapToData(domain: Filter): FilterEntity {
         return FilterEntity(domain.text,
                 domain.sources,
                 domain.allAnyCheck,

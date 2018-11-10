@@ -4,7 +4,8 @@ dependencies {
     def dependencies = rootProject.ext.domainDependencies
     def testDependencies = rootProject.ext.domainTestDependencies
 
-    implementation dependencies.coroutines
+    implementation dependencies.kotlin
+    implementation dependencies.rxJava
     implementation dependencies.javaxInject
 
     testImplementation testDependencies.junit

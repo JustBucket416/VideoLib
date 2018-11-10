@@ -1,18 +1,18 @@
 package justbucket.videolib.domain.feature.preferences
 
+import io.reactivex.Completable
+import io.reactivex.Scheduler
 import justbucket.videolib.domain.repository.PreferenceRepository
-import justbucket.videolib.domain.usecase.UseCase
+import justbucket.videolib.domain.usecase.CompletableUseCase
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class SaveDetailsState @Inject constructor(
-        context: CoroutineContext,
-        private val preferenceRepository: PreferenceRepository)
-    : UseCase<Unit, SaveDetailsState.Params>(context) {
+class SaveDetailsState @Inject constructor(observeScheduler: Scheduler,
+                                           private val preferenceRepository: PreferenceRepository)
+    : CompletableUseCase<SaveDetailsState.Params>(observeScheduler) {
 
-    override suspend fun run(params: Params?) {
-        if (params == null) throw IllegalArgumentException(ILLEGAL_EXCEPTION_MESSAGE)
-        preferenceRepository.saveDetailsSwitchState(params.openDetails)
+    override fun buildUseCase(params: Params?): Completable {
+        if (params == null) throw IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE)
+        return preferenceRepository.saveDetailsSwitchState(params.openDetails)
     }
 
     data class Params internal constructor(val openDetails: Int) {

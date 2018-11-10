@@ -1,16 +1,16 @@
 package justbucket.videolib.domain.feature.preferences
 
+import io.reactivex.Scheduler
+import io.reactivex.Single
 import justbucket.videolib.domain.repository.PreferenceRepository
-import justbucket.videolib.domain.usecase.UseCase
+import justbucket.videolib.domain.usecase.SingleUseCase
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class LoadDetailsState @Inject constructor(
-        context: CoroutineContext,
-        private val preferenceRepository: PreferenceRepository)
-    : UseCase<Int, Nothing>(context) {
+class LoadDetailsState @Inject constructor(observeScheduler: Scheduler,
+                                           private val preferenceRepository: PreferenceRepository)
+    : SingleUseCase<Int, Nothing>(observeScheduler) {
 
-    override suspend fun run(params: Nothing?): Int {
+    override fun buildUseCase(params: Nothing?): Single<Int> {
         return preferenceRepository.loadDetailsSwitchState()
     }
 }

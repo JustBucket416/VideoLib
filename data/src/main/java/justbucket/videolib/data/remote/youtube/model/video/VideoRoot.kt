@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName
 /**
  * A [Gson] model class
  */
-class VideoRoot {
+data class VideoRoot(
 
     @SerializedName("items")
     @Expose
     var items: List<Item>? = null
 
-}
+)

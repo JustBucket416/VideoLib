@@ -1,14 +1,16 @@
 package justbucket.videolib.domain.repository
 
+import io.reactivex.Completable
+import io.reactivex.Single
 import justbucket.videolib.domain.model.Filter
 
 interface PreferenceRepository {
 
-    suspend fun saveFilter(filter: Filter)
+    fun saveFilter(filter: Filter): Completable
 
-    suspend fun loadFilter(): Filter
+    fun loadFilter(): Single<Filter>
 
-    suspend fun saveDetailsSwitchState(state: Int)
+    fun saveDetailsSwitchState(state: Int): Completable
 
-    suspend fun loadDetailsSwitchState(): Int
+    fun loadDetailsSwitchState(): Single<Int>
 }

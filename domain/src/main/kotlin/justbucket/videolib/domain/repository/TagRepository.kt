@@ -1,5 +1,8 @@
 package justbucket.videolib.domain.repository
 
+import io.reactivex.Completable
+import io.reactivex.Single
+
 /**
  * A tag repository interface
  */
@@ -10,20 +13,20 @@ interface TagRepository {
      *
      * @param text - tag text
      */
-    suspend fun addTag(text: String)
+    fun addTag(text: String): Completable
 
     /**
      * Delete tag from database
      *
      * @param tag - a tag to delete
      */
-    suspend fun deleteTag(tag: String)
+    fun deleteTag(tag: String): Completable
 
     /**
      * Loads all tags from the db
      *
      * @return - list that contains all tags
      */
-    suspend fun getAllTags(): List<String>
+    fun getAllTags(): Single<List<String>>
 
 }

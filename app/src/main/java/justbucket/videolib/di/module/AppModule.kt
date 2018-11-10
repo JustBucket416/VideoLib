@@ -6,7 +6,7 @@ import com.bumptech.glide.Glide
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.Dispatchers
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 @Module
 abstract class AppModule {
@@ -20,7 +20,7 @@ abstract class AppModule {
 
         @Provides
         @JvmStatic
-        fun provideCoroutineContext(): kotlin.coroutines.CoroutineContext = Dispatchers.Main
+        fun provideObserveSheduler() = AndroidSchedulers.mainThread()
     }
 
     @Binds

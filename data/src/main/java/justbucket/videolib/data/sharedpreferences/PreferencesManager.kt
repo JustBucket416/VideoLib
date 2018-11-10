@@ -28,29 +28,29 @@ class PreferencesManager private constructor(context: Context) {
 
     private val preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
-    suspend fun saveFilter(entity: FilterEntity) {
+    fun saveFilter(entity: FilterEntity) {
         preferences.edit().putString(FILTER_KEY, filterToJson(entity)).apply()
     }
 
-    suspend fun loadFilter(): FilterEntity {
+    fun loadFilter(): FilterEntity {
         val filterString = preferences.getString(FILTER_KEY, null)
         return if (filterString != null) jsonToFilter(filterString)
         else FilterEntity()
     }
 
-    suspend fun saveDetailsSwitchState(state: Int) {
+    fun saveDetailsSwitchState(state: Int) {
         preferences.edit().putInt(DETAILS_SWITCH_STATE_KEY, state).apply()
     }
 
-    suspend fun loadDetailsSwitchState(): Int {
+    fun loadDetailsSwitchState(): Int {
         return preferences.getInt(DETAILS_SWITCH_STATE_KEY, 0)
     }
 
-    private suspend fun filterToJson(filterTemplate: FilterEntity): String {
+    private fun filterToJson(filterTemplate: FilterEntity): String {
         return Gson().toJson(filterTemplate)
     }
 
-    private suspend fun jsonToFilter(json: String): FilterEntity {
+    private fun jsonToFilter(json: String): FilterEntity {
         return Gson().fromJson(json, FilterEntity::class.java)
     }
 

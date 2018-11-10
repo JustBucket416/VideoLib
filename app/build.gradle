@@ -32,40 +32,41 @@ android {
 }
 
 dependencies {
-    def appDependencies = rootProject.ext.appDependencies
-    def appTestDependencies = rootProject.ext.appTestDependencies
+    def dependencies = rootProject.ext.appDependencies
+    def testDependencies = rootProject.ext.appTestDependencies
 
     implementation project(':data')
     implementation project(':domain')
     implementation project(':omfm')
 
-    implementation appDependencies.appCompatV7
-    implementation appDependencies.supportDesign
-    implementation appDependencies.cardView
-    implementation appDependencies.supportRecyclerView
-    implementation appDependencies.androidSupportV4
-    implementation appDependencies.constraintLayout
+    implementation dependencies.kotlin
+    implementation dependencies.appCompatV7
+    implementation dependencies.supportDesign
+    implementation dependencies.cardView
+    implementation dependencies.supportRecyclerView
+    implementation dependencies.androidSupportV4
+    implementation dependencies.constraintLayout
 
     //Youtube
-    implementation appDependencies.youtubeExtractor
+    implementation dependencies.youtubeExtractor
 
     //DB
-    implementation appDependencies.room
+    implementation dependencies.room
 
     //Async
-    implementation appDependencies.coroutines
-    implementation appDependencies.coroutinesAndroid
+    implementation dependencies.rxJava
+    implementation dependencies.rxAndroid
 
     //Image loading
-    implementation appDependencies.glide
+    implementation dependencies.glide
 
     //Dagger di
-    implementation appDependencies.dagger
-    implementation appDependencies.daggerSupport
-    kapt appDependencies.daggerProcessor
-    kapt appDependencies.daggerCompiler
+    implementation dependencies.dagger
+    implementation dependencies.daggerSupport
+    kapt dependencies.daggerProcessor
+    kapt dependencies.daggerCompiler
 
     //Lifecycle
-    implementation appDependencies.lifecycle
-    kapt appDependencies.lifecycleCompiler
+    implementation dependencies.lifecycle
+    kapt dependencies.lifecycleCompiler
 }

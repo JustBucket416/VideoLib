@@ -1,5 +1,7 @@
 package justbucket.videolib.data
 
+import io.reactivex.Completable
+import io.reactivex.Single
 import justbucket.videolib.data.db.VideoDatabase
 import justbucket.videolib.data.model.TagEntity
 import justbucket.videolib.domain.repository.TagRepository
@@ -9,15 +11,21 @@ class TagRepositoryImpl @Inject constructor(videoDatabase: VideoDatabase) : TagR
 
     private val tagDao = videoDatabase.tagDao()
 
-    override suspend fun addTag(text: String) {
-        tagDao.insertTag(TagEntity(text = text))
+    override fun addTag(text: String): Completable {
+        return Completable.defer {
+            tagDao.insertTag(TagEntity(text = text))
+            Completable.complete()
+        }
     }
 
-    override suspend fun deleteTag(tag: String) {
-        tagDao.deleteTag(tagDao.findTagByText(tag))
+    override fun deleteTag(tag: String): Completable {
+        return Completable.defer {
+            tagDao.deleteTag(tagDao.findTagByText(tag))
+            Completable.complete()
+        }
     }
 
-    override suspend fun getAllTags(): List<String> {
-        return tagDao.getAllTags().map { it.text }
+    override fun getAllTags(): Single<List<String>> {
+        return tagDao.getAllTags().map { it.map { it.text } }
     }
 }

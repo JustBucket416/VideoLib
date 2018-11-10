@@ -11,14 +11,13 @@ import justbucket.videolib.adapter.SourceImageAdapter
 import justbucket.videolib.adapter.TagListAdapter
 import justbucket.videolib.di.InjectedDialogFragment
 import justbucket.videolib.model.FilterPres
-import justbucket.videolib.viewmodel.BaseViewModel
 import justbucket.videolib.viewmodel.FilterViewModel
 import kotlinx.android.synthetic.main.fragment_dialog_filter.*
 
 /**
  * A [DialogFragment] subclass that shows the video filtering UI
  */
-class FilterFragment : InjectedDialogFragment<Triple<List<String>, List<Int>, FilterPres>>(),
+class FilterFragment : InjectedDialogFragment<Triple<List<String>, List<Int>, FilterPres>, FilterViewModel>(),
         GridFragment.FilterProvider {
 
     companion object {
@@ -34,11 +33,15 @@ class FilterFragment : InjectedDialogFragment<Triple<List<String>, List<Int>, Fi
     override val layoutId: Int
         get() = R.layout.fragment_dialog_filter
 
-    override val viewModel: BaseViewModel<Triple<List<String>, List<Int>, FilterPres>>
+    override val viewModel: FilterViewModel
         get() = ViewModelProviders.of(this, viewModelFactory)[FilterViewModel::class.java]
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         diafrag_recycler_tags.addItemDecoration(DividerItemDecoration(context, VERTICAL))
+
+        diafrag_toggle.setOnCheckedChangeListener { _, isChecked ->
+            filterPres.isAllAnyCheck = isChecked
+        }
     }
 
     override fun setupForSuccess(data: Triple<List<String>, List<Int>, FilterPres>?) {

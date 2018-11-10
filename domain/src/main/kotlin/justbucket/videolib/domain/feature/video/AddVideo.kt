@@ -1,19 +1,17 @@
 package justbucket.videolib.domain.feature.video
 
-import justbucket.videolib.domain.exception.Failure
-import justbucket.videolib.domain.functional.Either
+import io.reactivex.Scheduler
+import io.reactivex.Single
 import justbucket.videolib.domain.repository.VideoRepository
-import justbucket.videolib.domain.usecase.UseCase
+import justbucket.videolib.domain.usecase.SingleUseCase
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class AddVideo @Inject constructor(
-        context: CoroutineContext,
-        private val videoRepository: VideoRepository)
-    : UseCase<Either<Failure, Boolean>, AddVideo.Params>(context) {
+class AddVideo @Inject constructor(obserceScheduler: Scheduler,
+                                   private val videoRepository: VideoRepository)
+    : SingleUseCase<Boolean, AddVideo.Params>(obserceScheduler) {
 
-    override suspend fun run(params: Params?): Either<Failure, Boolean> {
-        if (params == null) throw IllegalArgumentException(ILLEGAL_EXCEPTION_MESSAGE)
+    override fun buildUseCase(params: Params?): Single<Boolean> {
+        if (params == null) throw IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE)
         return videoRepository.addVideo(params.link, params.tags)
     }
 

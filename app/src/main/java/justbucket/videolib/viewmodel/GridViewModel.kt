@@ -16,13 +16,14 @@ import justbucket.videolib.mapper.FilterMapper
 import justbucket.videolib.mapper.VideoMapper
 import justbucket.videolib.model.FilterPres
 import justbucket.videolib.model.VideoPres
-import justbucket.videolib.state.Resource
+import justbucket.videolib.utils.createCompletableObserver
+import justbucket.videolib.utils.createFlowableSubscriber
+import justbucket.videolib.utils.createSingleObserver
 import javax.inject.Inject
 
 class GridViewModel @Inject constructor(
         private val getVideos: GetVideos,
         private val getAllTags: GetAllTags,
-        private val videoMapper: VideoMapper,
         private val deleteVideo: DeleteVideo,
         private val addTag: AddTag,
         private val deleteTag: DeleteTag,
@@ -30,35 +31,52 @@ class GridViewModel @Inject constructor(
         private val saveDetailsState: SaveDetailsState,
         private val loadFilter: LoadFilter,
         private val saveFilter: SaveFilter,
+        private val videoMapper: VideoMapper,
         private val filterMapper: FilterMapper) : BaseViewModel<List<VideoPres>>() {
 
+    private val selectedIdsList = ArrayList<Long>()
     private lateinit var lastFilter: FilterPres
     var switchMode = 0
         private set
 
     override fun onCleared() {
         saveDetailsSwitchState()
-        saveFilter.execute(params = SaveFilter.Params.createParams(filterMapper.mapToDomain(lastFilter)))
+        saveFilter.execute(createCompletableObserver { },
+                params = SaveFilter.Params.createParams(filterMapper.mapToDomain(lastFilter)
+                ))
     }
 
-    fun getFilter() {
-        loadFilter.execute({
+    fun loadFilter() {
+        loadFilter.execute(createSingleObserver({
             lastFilter = filterMapper.mapToPresentation(it)
-            fetchVideosInternal()
-        })
+            fetchVideos(lastFilter)
+        }))
     }
 
     fun saveFilter(filter: FilterPres) {
-        saveFilter.execute(params = SaveFilter.Params.createParams(filterMapper.mapToDomain(filter)))
+        saveFilter.execute(
+                createCompletableObserver { },
+                params = SaveFilter.Params.createParams(filterMapper.mapToDomain(filter)
+                ))
     }
 
     /**
      * Requests videos from domain
      */
     fun fetchVideos(filterPres: FilterPres) {
-        if (lastFilter == filterPres) return
-        lastFilter = filterPres
-        fetchVideosInternal()
+        getVideos.execute(
+                createFlowableSubscriber(liveData) { list ->
+                    list.map {
+                        val videoPres = videoMapper.mapToPresentation(it)
+                        if (selectedIdsList.contains(it.id)) {
+                            videoPres.selected = true
+                            selectedIdsList.remove(it.id)
+                        }
+                        videoPres
+                    }
+                },
+                params = GetVideos.Params.createParams(filterMapper.mapToDomain(filterPres)
+                ))
     }
 
     /**
@@ -68,8 +86,8 @@ class GridViewModel @Inject constructor(
      */
     fun deleteVideos(videos: List<VideoPres>) {
         for ((index, videoPres) in videos.withIndex()) {
-            deleteVideo.execute({
-                if (index == videos.size - 1) fetchVideosInternal()
+            deleteVideo.execute(createCompletableObserver {
+                if (index == videos.size - 1) fetchVideos(lastFilter)
             }, DeleteVideo.Params.createParams(videoMapper.mapToDomain(videoPres)))
         }
     }
@@ -92,12 +110,8 @@ class GridViewModel @Inject constructor(
         }
     }
 
-    private fun saveDetailsSwitchState() {
-        saveDetailsState.execute(params = SaveDetailsState.Params.createParams(switchMode))
-    }
-
     fun loadDetailsSwitchState(item: MenuItem) {
-        loadDetailsState.execute({
+        loadDetailsState.execute(createSingleObserver({
             switchMode = it
             when (switchMode) {
                 SwitchValues.SWITCH_OPEN_DETAILS -> {
@@ -110,7 +124,7 @@ class GridViewModel @Inject constructor(
                     item.setIcon(R.drawable.ic_audiotrack)
                 }
             }
-        })
+        }))
     }
 
     /**
@@ -121,7 +135,9 @@ class GridViewModel @Inject constructor(
     fun addTag(tags: String) {
         tags.split(';').forEach { tag ->
             if (tag.isNotEmpty()) {
-                addTag.execute(params = AddTag.Params.createParams(tag))
+                addTag.execute(
+                        createCompletableObserver { },
+                        params = AddTag.Params.createParams(tag))
             }
         }
     }
@@ -132,7 +148,7 @@ class GridViewModel @Inject constructor(
      * @param func - the callback function because we don't want callback hell
      */
     fun getAllTags(func: (tags: List<String>) -> Unit) {
-        getAllTags.execute(func)
+        getAllTags.execute(createSingleObserver(func))
     }
 
     /**
@@ -141,15 +157,19 @@ class GridViewModel @Inject constructor(
      * @param text - a tag to delete
      */
     fun deleteTag(text: String) {
-        deleteTag.execute(params = DeleteTag.Params.createParams(text))
+        deleteTag.execute(createCompletableObserver { },
+                params = DeleteTag.Params.createParams(text))
     }
 
-    private fun fetchVideosInternal() {
-        liveData.postValue(Resource.loading())
-        getVideos.execute(onResult = { list ->
-            liveData.postValue(Resource.success(list.map { videoMapper.mapToPresentation(it) }))
-        },
-                params = GetVideos.Params.createParams(filterMapper.mapToDomain(lastFilter)))
+    fun savePositions(list: List<VideoPres>) {
+        list.forEach {
+            if (it.selected) selectedIdsList.add(it.id)
+        }
+    }
+
+    private fun saveDetailsSwitchState() {
+        saveDetailsState.execute(createCompletableObserver { },
+                params = SaveDetailsState.Params.createParams(switchMode))
     }
 
 }

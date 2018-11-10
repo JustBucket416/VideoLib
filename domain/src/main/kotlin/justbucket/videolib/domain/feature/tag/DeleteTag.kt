@@ -1,18 +1,18 @@
 package justbucket.videolib.domain.feature.tag
 
+import io.reactivex.Completable
+import io.reactivex.Scheduler
 import justbucket.videolib.domain.repository.TagRepository
-import justbucket.videolib.domain.usecase.UseCase
+import justbucket.videolib.domain.usecase.CompletableUseCase
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class DeleteTag @Inject constructor(
-        context: CoroutineContext,
-        private val tagRepository: TagRepository)
-    : UseCase<Unit, DeleteTag.Params>(context) {
+class DeleteTag @Inject constructor(observeScheduler: Scheduler,
+                                    private val tagRepository: TagRepository)
+    : CompletableUseCase<DeleteTag.Params>(observeScheduler) {
 
-    override suspend fun run(params: Params?) {
-        if (params == null) throw IllegalArgumentException(ILLEGAL_EXCEPTION_MESSAGE)
-        tagRepository.deleteTag(params.tag)
+    override fun buildUseCase(params: Params?): Completable {
+        if (params == null) throw IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE)
+        return tagRepository.deleteTag(params.tag)
     }
 
     data class Params internal constructor(val tag: String) {

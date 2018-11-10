@@ -42,6 +42,23 @@ data class VideoPres(val id: Long,
             return arrayOfNulls(size)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is VideoPres) {
+            return this.id == other.id
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + videoPath.hashCode()
+        result = 31 * result + thumbPath.hashCode()
+        result = 31 * result + source
+        result = 31 * result + tags.hashCode()
+        return result
+    }
 }
 
 

@@ -1,107 +1,115 @@
 package justbucket.videolib.data.remote.youtube
 
+import io.reactivex.Single
 import justbucket.videolib.data.db.VideoDatabase
 import justbucket.videolib.data.model.LinkEntity
 import justbucket.videolib.data.model.VideoEntity
 import justbucket.videolib.data.remote.YoutubeRepository
 import justbucket.videolib.data.remote.youtube.model.playlist.Item
-import justbucket.videolib.domain.exception.Failure
-import justbucket.videolib.domain.functional.Either
+import justbucket.videolib.domain.utils.getOrDie
+import java.io.IOException
 import javax.inject.Inject
 
 /**
  * An [YoutubeRepository] implementation
  */
 class YoutubeRepositoryImpl @Inject constructor(
-        private val retrofitHelper: RetrofitHelper,
-        /*private val requestManager: RequestManager,*/
+        private val youtubeAPI: YoutubeAPI,
         database: VideoDatabase
 ) : YoutubeRepository {
 
     private val videoDao = database.videoDao()
     private val linkDao = database.linkDao()
     private val tagDao = database.tagDao()
-    private val entities = ArrayList<VideoEntity>()
 
-    override suspend fun loadPlaylist(link: String, tags: List<String>): Either<Failure, Boolean> {
-        val response = retrofitHelper.getYoutubeApi().getPlaylist(playlist = link).execute()
-        if (response.isSuccessful) {
-            entities.addAll(parseResponse(response.body()?.items!!))
+    override fun loadPlaylist(link: String, tags: List<String>): Single<Boolean> {
+        return Single.defer {
+            val response = youtubeAPI.getPlaylist(playlist = link).execute()
+            if (response.isSuccessful) {
+                Single.just(parseItems(response.body()?.nextPageToken,
+                        link,
+                        tags,
+                        response.body()?.items.getOrDie("items"),
+                        true))
+            } else Single.error<Boolean>(IOException("Network exception"))
         }
-        return if (response.body()?.nextPageToken != null) loadRemaining(
-                response.body()?.nextPageToken!!, link, tags, false
-        ) else Either.Right(false)
     }
 
-    override suspend fun loadVideo(link: String, tags: List<String>): Either<Failure, Boolean> {
-        val response = retrofitHelper.getYoutubeApi().getVideo(id = link).execute()
-        if (response.isSuccessful) {
-            response.body().run {
-                val item = this?.items?.get(0)
-                val thumbPath: String = item?.snippet?.thumbnails?.maxres?.url
-                        ?: item?.snippet?.thumbnails?.standard?.url
-                        ?: item?.snippet?.thumbnails?.medium?.url
-                        ?: item?.snippet?.thumbnails?.default?.url!!
-                /*requestManager
-                        .downloadOnly()
-                        .load(thumbPath)*/
+    override fun loadVideo(link: String, tags: List<String>): Single<Boolean> {
+        return Single.defer {
+            val response = youtubeAPI.getVideo(id = link).execute()
+            if (response.isSuccessful) {
+                response.body().run {
+                    val item = this?.items?.get(0)
+                    val thumbPath: String = item?.snippet?.thumbnails?.maxres?.url
+                            ?: item?.snippet?.thumbnails?.standard?.url
+                            ?: item?.snippet?.thumbnails?.medium?.url
+                            ?: item?.snippet?.thumbnails?.default?.url.getOrDie("image")
 
-                val videoPath = "https://www.youtube.com/watch?v=${item?.id!!}"
-                val entity = videoDao.getVideoByPath(videoPath)
-                return if (entity == null) {
-                    val id = videoDao.insertVideo(VideoEntity(null, 1, item.snippet?.title!!,
-                            videoPath, thumbPath))
-                    tags.forEach {
-                        linkDao.insertLink(LinkEntity(id, tagDao.getTagId(it)))
+                    val videoPath = "https://www.youtube.com/watch?v=${item?.id.getOrDie("videoId")}"
+                    val entity = videoDao.getVideoByPath(videoPath)
+                    if (entity == null) {
+
+                        val id = videoDao.insertVideo(VideoEntity(null,
+                                1,
+                                item?.snippet?.title.getOrDie("title"),
+                                videoPath,
+                                thumbPath))
+
+                        tags.forEach {
+                            linkDao.insertLink(LinkEntity(id, tagDao.getTagId(it)))
+                        }
+                        Single.just(true)
+                    } else {
+                        tags.forEach {
+                            linkDao.insertLink(LinkEntity(entity.id!!, tagDao.getTagId(it)))
+                        }
+                        Single.just(false)
                     }
-                    Either.Right(true)
-                } else {
-                    tags.forEach {
-                        linkDao.insertLink(LinkEntity(entity.id!!, tagDao.getTagId(it)))
-                    }
-                    Either.Right(false)
                 }
-            }
-
-        } else return Either.Left(Failure.NetworkFailure)
+            } else Single.error<Boolean>(IOException("Network exception"))
+        }
     }
 
-    private fun parseResponse(items: List<Item>): List<VideoEntity> {
-        return items.map { item ->
+    private tailrec fun parseItems(token: String?, link: String, tags: List<String>, items: List<Item>, check: Boolean): Boolean {
+        var innerCheck = check
+        items.forEach { item ->
             val thumbPath: String = item.snippet?.thumbnails?.maxres?.url
                     ?: item.snippet?.thumbnails?.standard?.url
                     ?: item.snippet?.thumbnails?.medium?.url
-                    ?: item.snippet?.thumbnails?.default?.url!!
-            val videoPath = "https://www.youtube.com/watch?v=${item.snippet?.resourceId?.videoId!!}"
-            VideoEntity(null, 1, item.snippet?.title!!,
-                    videoPath, thumbPath)
+                    ?: item.snippet?.thumbnails?.default?.url.getOrDie("image")
+
+            val videoPath = "https://www.youtube.com/watch?v=${item.snippet?.resourceId?.videoId.getOrDie("videoId")}"
+            val entity = videoDao.getVideoByPath(videoPath)
+            if (entity == null) {
+
+                val id = videoDao.insertVideo(VideoEntity(null,
+                        1,
+                        item.snippet?.title.getOrDie("title"),
+                        videoPath,
+                        thumbPath))
+
+                tags.forEach {
+                    linkDao.insertLink(LinkEntity(id, tagDao.getTagId(it)))
+                }
+                innerCheck = true
+            } else {
+                tags.forEach {
+                    linkDao.insertLink(LinkEntity(entity.id!!, tagDao.getTagId(it)))
+                }
+                innerCheck = false
+            }
+        }
+        return if (token == null) innerCheck
+        else {
+            val response = youtubeAPI.getNextPage(pageToken = token, playlist = link).execute()
+            parseItems(response.body()?.nextPageToken,
+                    link,
+                    tags,
+                    response.body()?.items.getOrDie("items"),
+                    innerCheck)
+
         }
     }
 
-    private tailrec fun loadRemaining(token: String, playlist: String, tags: List<String>, check: Boolean): Either<Failure, Boolean> {
-        var check = true
-        val response = retrofitHelper.getYoutubeApi().getNextPage(pageToken = token, playlist = playlist).execute()
-        entities.addAll(parseResponse(response?.body()?.items!!))
-        if (response.body()?.nextPageToken == null) {
-            entities.forEach {
-                /*requestManager
-                        .downloadOnly()
-                        .load(thumbPath)
-                        .submit()*/
-                val entity = videoDao.getVideoByPath(it.videoPath)
-                if (entity == null) {
-                    val id = videoDao.insertVideo(it)
-                    tags.forEach {
-                        linkDao.insertLink(LinkEntity(id, tagDao.getTagId(it)))
-                    }
-                } else {
-                    check = false
-                    tags.forEach {
-                        linkDao.insertLink(LinkEntity(entity.id!!, tagDao.getTagId(it)))
-                    }
-                }
-            }
-            return Either.Right(check)
-        } else return loadRemaining(response.body()?.nextPageToken!!, playlist, tags, check)
-    }
 }

@@ -9,7 +9,7 @@ class VideoMapper @Inject constructor(
         private val database: VideoDatabase)
     : Mapper<Video, Pair<VideoEntity, List<String>>> {
 
-    override suspend fun mapToDomain(data: Pair<VideoEntity, List<String>>): Video {
+    override fun mapToDomain(data: Pair<VideoEntity, List<String>>): Video {
         return Video(data.first.id!!,
                 data.first.title,
                 data.first.videoPath,
@@ -18,7 +18,7 @@ class VideoMapper @Inject constructor(
                 data.second)
     }
 
-    override suspend fun mapToData(domain: Video): Pair<VideoEntity, List<String>> {
+    override fun mapToData(domain: Video): Pair<VideoEntity, List<String>> {
         return Pair(VideoEntity(domain.id,
                 database.sourceDao().getSourceId(domain.source),
                 domain.title,

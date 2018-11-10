@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName
 /**
  * A [Gson] model class
  */
-class Default {
+data class Default(
 
     @SerializedName("url")
     @Expose
     var url: String? = null
 
-}
+)

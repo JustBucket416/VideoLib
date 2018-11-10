@@ -1,15 +1,16 @@
 package justbucket.videolib.domain.feature.tag
 
+import io.reactivex.Scheduler
+import io.reactivex.Single
 import justbucket.videolib.domain.repository.TagRepository
-import justbucket.videolib.domain.usecase.UseCase
+import justbucket.videolib.domain.usecase.SingleUseCase
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class GetAllTags @Inject constructor(
-        context: CoroutineContext,
-        private val tagRepository: TagRepository)
-    : UseCase<List<String>, Nothing>(context) {
+class GetAllTags @Inject constructor(observeScheduler: Scheduler,
+                                     private val tagRepository: TagRepository)
+    : SingleUseCase<List<String>, Nothing>(observeScheduler) {
 
-    override suspend fun run(params: Nothing?) =
-            tagRepository.getAllTags()
+    override fun buildUseCase(params: Nothing?): Single<List<String>> {
+        return tagRepository.getAllTags()
+    }
 }

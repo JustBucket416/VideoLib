@@ -18,11 +18,10 @@ import justbucket.videolib.adapter.PortraitLayoutManager
 import justbucket.videolib.adapter.TagListAdapter
 import justbucket.videolib.di.InjectedFragment
 import justbucket.videolib.model.VideoPres
-import justbucket.videolib.viewmodel.BaseViewModel
 import justbucket.videolib.viewmodel.DetailViewModel
 import kotlinx.android.synthetic.main.fragment_imange_pager.*
 
-class ImagePagerFragment : InjectedFragment<List<String>>() {
+class ImagePagerFragment : InjectedFragment<List<String>, DetailViewModel>() {
 
     private lateinit var videoList: List<VideoPres>
     private lateinit var adapter: TagListAdapter
@@ -30,7 +29,7 @@ class ImagePagerFragment : InjectedFragment<List<String>>() {
     override val layoutId: Int
         get() = R.layout.fragment_imange_pager
 
-    override val viewModel: BaseViewModel<List<String>>
+    override val viewModel: DetailViewModel
         get() = ViewModelProviders.of(this, viewModelFactory)[DetailViewModel::class.java]
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,7 +77,7 @@ class ImagePagerFragment : InjectedFragment<List<String>>() {
                         override fun onTagCheckChange(tag: String, checked: Boolean) {
                             val videoPres = videoList[MainActivity.currentPosition]
                             if (checked) videoPres.tags.add(tag) else videoPres.tags.remove(tag)
-                            (viewModel as DetailViewModel).saveVideoTags(videoPres)
+                            viewModel.saveVideoTags(videoPres)
                         }
                     })
             adapter.parseSelected(videoList[MainActivity.currentPosition].tags)

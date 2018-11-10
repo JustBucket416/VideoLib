@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName
 /**
  * A [Gson] model class
  */
-class ResourceId {
+data class ResourceId(
 
     @SerializedName("videoId")
     @Expose
     var videoId: String? = null
 
-}
+)

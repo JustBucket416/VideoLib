@@ -6,6 +6,7 @@ import android.widget.Toast
 import dagger.android.DaggerService
 import justbucket.videolib.R
 import justbucket.videolib.domain.feature.video.AddVideo
+import justbucket.videolib.utils.createSingleObserver
 import javax.inject.Inject
 
 class ImportService : DaggerService() {
@@ -20,17 +21,17 @@ class ImportService : DaggerService() {
         val tags: ArrayList<String> = intent.getStringArrayListExtra(TAGS_KEY)
         Toast.makeText(this, getString(R.string.string_adding), Toast.LENGTH_SHORT).show()
         paths.forEach { path ->
-            addVideo.execute({ either ->
-                either.either({
-                    Toast.makeText(this, getString(R.string.import_video_error), Toast.LENGTH_SHORT).show()
-                    stopSelf()
-                }
-                ) {
-                    if (it) Toast.makeText(this, getString(R.string.string_import_success), Toast.LENGTH_SHORT).show()
-                    else Toast.makeText(this, getString(R.string.string_import_stored), Toast.LENGTH_SHORT).show()
-                    stopSelf()
-                }
-            }, AddVideo.Params.createParams(path, tags))
+            addVideo.execute(createSingleObserver(
+                    succBlock = {
+                        if (it) Toast.makeText(this, getString(R.string.string_import_success), Toast.LENGTH_SHORT).show()
+                        else Toast.makeText(this, getString(R.string.string_import_stored), Toast.LENGTH_SHORT).show()
+                        stopSelf()
+                    },
+                    errBlock = {
+                        Toast.makeText(this, getString(R.string.import_video_error), Toast.LENGTH_SHORT).show()
+                        stopSelf()
+                    }
+            ), AddVideo.Params.createParams(path, tags))
         }
         return super.onStartCommand(intent, flags, startId)
     }

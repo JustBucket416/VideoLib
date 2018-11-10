@@ -6,16 +6,16 @@ import com.google.gson.annotations.SerializedName
 /**
  * A [Gson] model class
  */
-class Maxres {
+data class Maxres(
 
-    @SerializedName("url")
+        @SerializedName("url")
     @Expose
-    var url: String? = null
-    @SerializedName("width")
+        var url: String? = null,
+        @SerializedName("width")
     @Expose
-    var width: Int? = null
-    @SerializedName("height")
+        var width: Int? = null,
+        @SerializedName("height")
     @Expose
     var height: Int? = null
 
-}
+)

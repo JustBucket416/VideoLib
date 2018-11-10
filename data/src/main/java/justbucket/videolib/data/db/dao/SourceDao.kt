@@ -4,6 +4,7 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
+import io.reactivex.Single
 import justbucket.videolib.data.db.DBConstants
 import justbucket.videolib.data.model.SourceEntity
 
@@ -20,7 +21,7 @@ interface SourceDao {
     fun deleteSource(sourceEntity: SourceEntity)
 
     @Query(DBConstants.QUERY_ALL_SOURCES)
-    fun getAllSources(): List<SourceEntity>
+    fun getAllSources(): Single<List<SourceEntity>>
 
     @Query(DBConstants.QUERY_BY_SOURCE_ID)
     fun getSourceById(sourceId: Long): Int

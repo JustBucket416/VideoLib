@@ -1,6 +1,7 @@
 package justbucket.videolib.data.db.dao
 
 import android.arch.persistence.room.*
+import io.reactivex.Single
 import justbucket.videolib.data.db.DBConstants
 import justbucket.videolib.data.db.DBConstants.QUERY_ALL_TAGS
 import justbucket.videolib.data.model.TagEntity
@@ -21,7 +22,7 @@ interface TagDao {
     fun deleteTag(tagEntity: TagEntity)
 
     @Query(QUERY_ALL_TAGS)
-    fun getAllTags(): List<TagEntity>
+    fun getAllTags(): Single<List<TagEntity>>
 
     @Query(DBConstants.QUERY_TAG_BY_ID)
     fun getTagId(tagText: String): Long

@@ -6,10 +6,9 @@ import com.google.gson.annotations.SerializedName
 /**
  * A [Gson] model class
  */
-class Medium {
+data class Medium(
 
     @SerializedName("url")
     @Expose
     var url: String? = null
-
-}
+)

@@ -1,5 +1,7 @@
 package justbucket.videolib.data
 
+import io.reactivex.Completable
+import io.reactivex.Single
 import justbucket.videolib.data.mapper.FilterMapper
 import justbucket.videolib.data.sharedpreferences.PreferencesManager
 import justbucket.videolib.domain.model.Filter
@@ -10,19 +12,25 @@ class PreferenceRepositoryImpl @Inject constructor(
         private val preferencesManager: PreferencesManager,
         private val filterMapper: FilterMapper) : PreferenceRepository {
 
-    override suspend fun saveFilter(filter: Filter) {
-        preferencesManager.saveFilter(filterMapper.mapToData(filter))
+    override fun saveFilter(filter: Filter): Completable {
+        return Completable.defer {
+            preferencesManager.saveFilter(filterMapper.mapToData(filter))
+            Completable.complete()
+        }
     }
 
-    override suspend fun loadFilter(): Filter {
-        return filterMapper.mapToDomain(preferencesManager.loadFilter())
+    override fun loadFilter(): Single<Filter> {
+        return Single.just(filterMapper.mapToDomain(preferencesManager.loadFilter()))
     }
 
-    override suspend fun saveDetailsSwitchState(state: Int) {
-        preferencesManager.saveDetailsSwitchState(state)
+    override fun saveDetailsSwitchState(state: Int): Completable {
+        return Completable.defer {
+            preferencesManager.saveDetailsSwitchState(state)
+            Completable.complete()
+        }
     }
 
-    override suspend fun loadDetailsSwitchState(): Int {
-        return preferencesManager.loadDetailsSwitchState()
+    override fun loadDetailsSwitchState(): Single<Int> {
+        return Single.just(preferencesManager.loadDetailsSwitchState())
     }
 }

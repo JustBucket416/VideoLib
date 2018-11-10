@@ -6,6 +6,7 @@ import justbucket.videolib.domain.feature.tag.GetAllTags
 import justbucket.videolib.mapper.FilterMapper
 import justbucket.videolib.model.FilterPres
 import justbucket.videolib.state.Resource
+import justbucket.videolib.utils.createSingleObserver
 import javax.inject.Inject
 
 class FilterViewModel @Inject constructor(
@@ -15,17 +16,23 @@ class FilterViewModel @Inject constructor(
         private val filterMapper: FilterMapper) : BaseViewModel<Triple<List<String>, List<Int>, FilterPres>>() {
 
     init {
-        liveData.postValue(Resource.loading())
-        getAllTags.execute({ tagList ->
-            getAllSources.execute({ sourceList ->
-                loadFilter.execute({ filterTemplate ->
-                    liveData.postValue(Resource.success(Triple(
-                            tagList,
-                            sourceList,
-                            filterMapper.mapToPresentation(filterTemplate)
-                    )))
-                })
-            })
-        })
+        getAllTags.execute(createSingleObserver(
+                { tags ->
+                    getAllSources.execute(createSingleObserver(
+                            { sources ->
+                                loadFilter.execute(createSingleObserver(
+                                        {
+                                            liveData.postValue(Resource.success(Triple(tags,
+                                                    sources,
+                                                    filterMapper.mapToPresentation(it))))
+                                        }
+                                ))
+
+                            }
+                    ))
+
+                }
+        ))
     }
+
 }

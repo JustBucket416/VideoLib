@@ -1,7 +1,9 @@
 package justbucket.videolib.domain.repository
 
-import justbucket.videolib.domain.exception.Failure
-import justbucket.videolib.domain.functional.Either
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Single
+import justbucket.videolib.domain.model.Filter
 import justbucket.videolib.domain.model.Video
 
 /**
@@ -17,14 +19,14 @@ interface VideoRepository {
      *
      * @return an [Either] instance
      */
-    suspend fun addVideo(link: String, tags: List<String>): Either<Failure, Boolean>
+    fun addVideo(link: String, tags: List<String>): Single<Boolean>
 
     /**
      * Deletes a video from the db
      *
      * @param video - a video to delete
      */
-    suspend fun deleteVideo(video: Video)
+    fun deleteVideo(video: Video): Completable
 
     /**
      * Updates video's tags
@@ -32,7 +34,7 @@ interface VideoRepository {
      * @param video - a video instance
      * @param tags - a new list of video tags
      */
-    suspend fun updateVideoTags(video: Video)
+    fun updateVideoTags(video: Video): Completable
 
     /**
      * Adds tags to tags that are already stored
@@ -40,13 +42,13 @@ interface VideoRepository {
      * @param video - a video instance
      * @param tags - a list of tags to add
      */
-    suspend fun addVideoTags(video: Video, tags: List<String>)
+    fun addVideoTags(video: Video, tags: List<String>): Completable
 
     /**
      * Loads all videos from the db
      *
      * @return a list of [Video] instances
      */
-    suspend fun getAllVideos(): List<Video>
+    fun getFilteredVideos(filter: Filter): Flowable<List<Video>>
 
 }

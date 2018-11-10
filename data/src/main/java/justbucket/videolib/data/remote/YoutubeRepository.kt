@@ -1,7 +1,6 @@
 package justbucket.videolib.data.remote
 
-import justbucket.videolib.domain.exception.Failure
-import justbucket.videolib.domain.functional.Either
+import io.reactivex.Single
 
 /**
  * A repository interface which loads videos from YouTube
@@ -15,7 +14,7 @@ interface YoutubeRepository {
      *
      * @return a list of video entities
      */
-    suspend fun loadPlaylist(link: String, tags: List<String>): Either<Failure, Boolean>
+    fun loadPlaylist(link: String, tags: List<String>): Single<Boolean>
 
 
     /**
@@ -25,5 +24,5 @@ interface YoutubeRepository {
      *
      * @return a video entity
      */
-    suspend fun loadVideo(link: String, tags: List<String>): Either<Failure, Boolean>
+    fun loadVideo(link: String, tags: List<String>): Single<Boolean>
 }

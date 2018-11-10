@@ -1,6 +1,5 @@
 package justbucket.videolib.di
 
-import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.os.Bundle
@@ -14,10 +13,10 @@ import justbucket.videolib.state.ResourceState
 import justbucket.videolib.viewmodel.BaseViewModel
 import javax.inject.Inject
 
-abstract class InjectedFragment<Data> : Fragment() {
+abstract class InjectedFragment<Data, T : BaseViewModel<Data>> : Fragment() {
 
-    abstract val layoutId: Int
-    abstract val viewModel: BaseViewModel<Data>
+    protected abstract val layoutId: Int
+    protected abstract val viewModel: T
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -25,7 +24,7 @@ abstract class InjectedFragment<Data> : Fragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         AndroidSupportInjection.inject(this)
-        viewModel.getData().observe(context as LifecycleOwner, Observer { resource ->
+        viewModel.getData().observe(this, Observer { resource ->
             resource?.let {
                 handleDataState(it)
             }

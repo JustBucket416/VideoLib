@@ -1,19 +1,19 @@
 package justbucket.videolib.domain.feature.video
 
+import io.reactivex.Completable
+import io.reactivex.Scheduler
 import justbucket.videolib.domain.model.Video
 import justbucket.videolib.domain.repository.VideoRepository
-import justbucket.videolib.domain.usecase.UseCase
+import justbucket.videolib.domain.usecase.CompletableUseCase
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class AddVideoTags @Inject constructor(
-        context: CoroutineContext,
-        private val videoRepository: VideoRepository)
-    : UseCase<Unit, AddVideoTags.Params>(context) {
+class AddVideoTags @Inject constructor(observeScheduler: Scheduler,
+                                       private val videoRepository: VideoRepository)
+    : CompletableUseCase<AddVideoTags.Params>(observeScheduler) {
 
-    override suspend fun run(params: Params?) {
-        if (params == null) throw IllegalArgumentException(ILLEGAL_EXCEPTION_MESSAGE)
-        videoRepository.addVideoTags(params.video, params.tags)
+    override fun buildUseCase(params: Params?): Completable {
+        if (params == null) throw IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE)
+        return videoRepository.addVideoTags(params.video, params.tags)
     }
 
     data class Params internal constructor(val video: Video, val tags: List<String>) {

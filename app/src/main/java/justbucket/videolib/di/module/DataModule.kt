@@ -14,6 +14,7 @@ import justbucket.videolib.data.remote.MemoryRepository
 import justbucket.videolib.data.remote.YoutubeRepository
 import justbucket.videolib.data.remote.memory.MemoryRepositoryImpl
 import justbucket.videolib.data.remote.youtube.RetrofitHelper
+import justbucket.videolib.data.remote.youtube.YoutubeAPI
 import justbucket.videolib.data.remote.youtube.YoutubeRepositoryImpl
 import justbucket.videolib.data.sharedpreferences.PreferencesManager
 import justbucket.videolib.domain.repository.PreferenceRepository
@@ -36,16 +37,23 @@ class DataModule {
     }
 
     @Provides
-    fun provideYOutubeRepository(retrofitHelper: RetrofitHelper,
-                                 database: VideoDatabase): YoutubeRepository {
-        return YoutubeRepositoryImpl(retrofitHelper, database)
+    fun provideYoutubeApi(): YoutubeAPI {
+        return RetrofitHelper().getYoutubeApi()
     }
 
     @Provides
-    fun provideVideoRepository(videoDatabase: VideoDatabase, videoMapper: VideoMapper,
+    fun provideYoutubeRepository(youtubeAPI: YoutubeAPI,
+                                 database: VideoDatabase): YoutubeRepository {
+        return YoutubeRepositoryImpl(youtubeAPI, database)
+    }
+
+    @Provides
+    fun provideVideoRepository(filterMapper: FilterMapper, videoDatabase: VideoDatabase,
+                               videoMapper: VideoMapper,
                                memoryRepository: MemoryRepository,
                                youtubeRepository: YoutubeRepository): VideoRepository {
-        return VideoRepositoryImpl(videoDatabase, videoMapper, memoryRepository, youtubeRepository)
+        return VideoRepositoryImpl(filterMapper, videoDatabase, videoMapper,
+                memoryRepository, youtubeRepository)
     }
 
     @Provides

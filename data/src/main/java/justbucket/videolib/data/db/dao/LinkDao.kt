@@ -1,6 +1,7 @@
 package justbucket.videolib.data.db.dao
 
 import android.arch.persistence.room.*
+import io.reactivex.Single
 import justbucket.videolib.data.db.DBConstants.QUERY_DELETE_ALL_LINKS
 import justbucket.videolib.data.db.DBConstants.QUERY_GET_ALL_LINKS
 import justbucket.videolib.data.model.LinkEntity
@@ -18,7 +19,7 @@ interface LinkDao {
     fun deleteLink(linkEntity: LinkEntity)
 
     @Query(QUERY_GET_ALL_LINKS)
-    fun getAllLinks(): List<LinkEntity>
+    fun getAllLinks(): Single<List<LinkEntity>>
 
     @Query(QUERY_DELETE_ALL_LINKS)
     fun deleteAllLinks(videoId: Long)

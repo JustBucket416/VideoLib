@@ -2,7 +2,6 @@ package justbucket.videolib
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.view.ActionMode
 import justbucket.videolib.extension.inTransaction
 import justbucket.videolib.fragment.GridFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -13,7 +12,6 @@ class MainActivity : AppCompatActivity() {
         private const val POSITION_KEY = "pos-key"
         private const val FRAGMENT_GRID_TAG = "grid"
         var currentPosition: Int = 0
-        var actionMode: ActionMode? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +32,5 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.putInt(POSITION_KEY, currentPosition)
     }
-
 
 }

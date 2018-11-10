@@ -1,6 +1,7 @@
 package justbucket.videolib.data.db.dao
 
 import android.arch.persistence.room.*
+import io.reactivex.Flowable
 import justbucket.videolib.data.db.DBConstants.QUERY_ALL_VIDEOS
 import justbucket.videolib.data.db.DBConstants.QUERY_VIDEO_BY_ID
 import justbucket.videolib.data.db.DBConstants.QUERY_VIDEO_BY_PATH
@@ -10,24 +11,28 @@ import justbucket.videolib.data.model.VideoEntity
  * A Room [Dao] interface for videos table
  */
 @Dao
-interface VideoDao {
+abstract class VideoDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertVideo(videoEntity: VideoEntity): Long
+    abstract fun insertVideo(videoEntity: VideoEntity): Long
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateVideo(videoEntity: VideoEntity)
+    abstract fun updateVideo(videoEntity: VideoEntity)
 
     @Delete
-    fun deleteVideo(videoEntity: VideoEntity)
+    abstract fun deleteVideo(videoEntity: VideoEntity)
 
     @Query(QUERY_ALL_VIDEOS)
-    fun getAllVideos(): List<VideoEntity>
+    abstract fun getAllVideos(): Flowable<List<VideoEntity>>
 
     @Query(QUERY_VIDEO_BY_ID)
-    fun getVideoById(id: Long): VideoEntity?
+    abstract fun getVideoById(id: Long): VideoEntity?
 
     @Query(QUERY_VIDEO_BY_PATH)
-    fun getVideoByPath(path: String): VideoEntity?
+    abstract fun getVideoByPath(path: String): VideoEntity?
+
+    fun getDistinctVideos(): Flowable<List<VideoEntity>> {
+        return getAllVideos().distinctUntilChanged()
+    }
 
 }

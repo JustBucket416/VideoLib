@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
+
 apply plugin: 'kotlin-android'
+
 apply plugin: 'kotlin-kapt'
 
 android {
@@ -29,10 +31,13 @@ dependencies {
 
     implementation project(':domain')
 
-    implementation dependencies.coroutines
+    implementation dependencies.kotlin
+    implementation dependencies.rxJava
     implementation dependencies.room
+    implementation dependencies.roomRX
     implementation dependencies.retrofit
     implementation dependencies.retrofitConverter
+    implementation dependencies.retrofitRxAdapter
     implementation dependencies.glide
     implementation dependencies.javaxInject
     kapt dependencies.roomAP
