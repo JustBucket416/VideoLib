@@ -1,4 +1,4 @@
-package justbucket.videolib.data.remote.youtube
+package justbucket.videolib.data.remote
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -12,26 +12,20 @@ import javax.inject.Inject
  */
 class RetrofitHelper @Inject constructor() {
 
-    companion object {
-        private const val BASE_URL = "https://www.googleapis.com/youtube/v3/"
-    }
-
     /**
      * Creates [Gson] instance passes it to [Retrofit.Builder] and creates an instance of [YoutubeAPI] class
      *
      * @return a created [YoutubeAPI] instance
      */
-    fun getYoutubeApi(): YoutubeAPI = with(Retrofit.Builder()) {
-        baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(createGson()))
+    inline fun <reified T> getNetworkApi(url: String): T = with(Retrofit.Builder()) {
+        val gson = GsonBuilder()
+                .setLenient()
+                .serializeNulls()
+                .create()
+
+        baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
-    }.create(YoutubeAPI::class.java)
-
-    private fun createGson() =
-            GsonBuilder()
-                    .setLenient()
-                    .serializeNulls()
-                    .create()
-
+    }.create(T::class.java)
 }

@@ -9,7 +9,7 @@ object DBConstants {
 
     const val TABLE_VIDEO_NAME = "videos"
 
-    const val TABLE_TAG_NAME = "tags"
+    const val TABLE_TAG_NAME = "text"
 
     const val TABLE_LINK_NAME = "links"
 
@@ -54,10 +54,14 @@ object DBConstants {
 
     const val QUERY_TAG_BY_TEXT = "SELECT * FROM $TABLE_TAG_NAME WHERE $COLUMN_TAG_TEXT = :tagText"
 
+    const val QUERY_DELETE_TAG_BY_ID = "DELETE FROM $TABLE_TAG_NAME WHERE $COLUMN_TAG_ID = :id"
+
     //VideoEntity queries
     const val QUERY_VIDEO_BY_ID = "SELECT * FROM $TABLE_VIDEO_NAME WHERE $COLUMN_VIDEO_ID = :id"
 
     const val QUERY_VIDEO_BY_PATH = "SELECT * FROM $TABLE_VIDEO_NAME WHERE videoPath = :path"
 
     const val QUERY_ALL_VIDEOS = "SELECT * FROM $TABLE_VIDEO_NAME ORDER BY $COLUMN_VIDEO_TITLE ASC"
+
+    const val QUERY_DELETE_VIDEO_BY_ID = "DELETE FROM $TABLE_VIDEO_NAME WHERE $COLUMN_VIDEO_ID = :id"
 }

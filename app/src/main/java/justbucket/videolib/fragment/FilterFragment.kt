@@ -73,7 +73,7 @@ class FilterFragment : InjectedDialogFragment<Pair<List<String>, List<Int>>, Fil
     /**
      * Shows successfully loaded videos
      *
-     * @param tags - loaded tags
+     * @param tags - loaded text
      */
     private fun showTags(tags: List<String>) {
         if (tags.isNotEmpty()) {
@@ -86,7 +86,7 @@ class FilterFragment : InjectedDialogFragment<Pair<List<String>, List<Int>>, Fil
             })
             tagAdapter.parseSelected(filterPres.tags)
             diafrag_recycler_tags.adapter = tagAdapter
-        } else setupForError("No tags found")
+        } else setupForError("No text found")
     }
 
     private fun showSources(sources: List<Int>) {

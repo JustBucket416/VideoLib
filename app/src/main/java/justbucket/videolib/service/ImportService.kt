@@ -38,7 +38,7 @@ class ImportService : DaggerService() {
 
     companion object {
         private const val LINKS_KEY = "link-key"
-        private const val TAGS_KEY = "tags-key"
+        private const val TAGS_KEY = "text-key"
 
         fun newIntent(context: Context, links: List<String>, tags: List<String>): Intent {
             return Intent(context, ImportService::class.java).apply {

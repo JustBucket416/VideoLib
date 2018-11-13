@@ -17,5 +17,5 @@ data class SourceEntity(
         var id: Long? = null,
 
         @ColumnInfo(name = COLUMN_SOURCE_TEXT)
-        var source: Int
+        var source: String
 )

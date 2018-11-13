@@ -23,10 +23,10 @@ class ActionViewModel @Inject constructor(getAllTags: GetAllTags,
     }
 
     /**
-     * Requests the domain to apply tags to given videos
+     * Requests the domain to apply text to given videos
      *
-     * @param items - list of videos to which we apply tags
-     * @param tags - a list of tags which we apply to videos
+     * @param items - list of videos to which we apply text
+     * @param tags - a list of text which we apply to videos
      */
     fun applyTags(items: List<VideoPres>, tags: MutableList<String>) {
         items.filter { it.selected }.forEach {

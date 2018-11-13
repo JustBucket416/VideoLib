@@ -14,7 +14,7 @@ class DetailViewModel @Inject constructor(getAllTags: GetAllTags,
                                           private val videoMapper: VideoMapper) : BaseViewModel<List<String>>() {
 
     /**
-     * Requests domain to load all tags
+     * Requests domain to load all text
      */
     init {
         getAllTags.execute(createSingleObserver(
@@ -25,9 +25,9 @@ class DetailViewModel @Inject constructor(getAllTags: GetAllTags,
     }
 
     /**
-     * Requests domain to save new video tags
+     * Requests domain to save new video text
      *
-     * @param videoPres - a video with tags to aply
+     * @param videoPres - a video with text to aply
      */
     fun saveVideoTags(videoPres: VideoPres) {
         updateVideoTags.execute(

@@ -4,6 +4,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import justbucket.videolib.domain.model.Filter
+import justbucket.videolib.domain.model.Tag
 import justbucket.videolib.domain.model.Video
 
 /**
@@ -19,7 +20,7 @@ interface VideoRepository {
      *
      * @return an [Either] instance
      */
-    fun addVideo(link: String, tags: List<String>): Single<Boolean>
+    fun addVideo(link: String, tags: List<Tag>): Single<Boolean>
 
     /**
      * Deletes a video from the db
@@ -42,7 +43,7 @@ interface VideoRepository {
      * @param video - a video instance
      * @param tags - a list of tags to add
      */
-    fun addVideoTags(video: Video, tags: List<String>): Completable
+    fun addVideoTags(video: Video, tags: List<Tag>): Completable
 
     /**
      * Loads all videos from the db

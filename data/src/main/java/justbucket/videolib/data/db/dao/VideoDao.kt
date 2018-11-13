@@ -3,6 +3,7 @@ package justbucket.videolib.data.db.dao
 import android.arch.persistence.room.*
 import io.reactivex.Flowable
 import justbucket.videolib.data.db.DBConstants.QUERY_ALL_VIDEOS
+import justbucket.videolib.data.db.DBConstants.QUERY_DELETE_VIDEO_BY_ID
 import justbucket.videolib.data.db.DBConstants.QUERY_VIDEO_BY_ID
 import justbucket.videolib.data.db.DBConstants.QUERY_VIDEO_BY_PATH
 import justbucket.videolib.data.model.VideoEntity
@@ -30,6 +31,9 @@ abstract class VideoDao {
 
     @Query(QUERY_VIDEO_BY_PATH)
     abstract fun getVideoByPath(path: String): VideoEntity?
+
+    @Query(QUERY_DELETE_VIDEO_BY_ID)
+    abstract fun deleteVideoById(id: Long)
 
     fun getDistinctVideos(): Flowable<List<VideoEntity>> {
         return getAllVideos().distinctUntilChanged()

@@ -130,7 +130,7 @@ class GridViewModel @Inject constructor(
     /**
      * Requests the domain to add some new Tags
      *
-     * @param tags - the string with tags
+     * @param tags - the string with text
      */
     fun addTag(tags: String) {
         tags.split(';').forEach { tag ->
@@ -143,7 +143,7 @@ class GridViewModel @Inject constructor(
     }
 
     /**
-     * Requests the domain to get all tags
+     * Requests the domain to get all text
      *
      * @param func - the callback function because we don't want callback hell
      */
@@ -152,9 +152,9 @@ class GridViewModel @Inject constructor(
     }
 
     /**
-     * Requests the domain to delete some tags
+     * Requests the domain to delete some text
      *
-     * @param tags - tags to delete
+     * @param tags - text to delete
      */
     fun deleteTags(tags: List<String>) {
         tags.forEachIndexed { index, string ->

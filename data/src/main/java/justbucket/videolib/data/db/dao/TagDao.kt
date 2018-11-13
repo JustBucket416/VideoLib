@@ -7,7 +7,7 @@ import justbucket.videolib.data.db.DBConstants.QUERY_ALL_TAGS
 import justbucket.videolib.data.model.TagEntity
 
 /**
- * A Room [Dao] interface for tags table
+ * A Room [Dao] interface for text table
  */
 @Dao
 interface TagDao {
@@ -29,6 +29,9 @@ interface TagDao {
 
     @Query(DBConstants.QUERY_TAG_BY_TEXT)
     fun findTagByText(tagText: String): TagEntity
+
+    @Query(DBConstants.QUERY_DELETE_TAG_BY_ID)
+    fun deleteTagById(id: Long)
 
 
 }

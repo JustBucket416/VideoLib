@@ -66,7 +66,7 @@ class SelectTagsFragment : InjectedDialogFragment<List<String>, ActionViewModel>
     /**
      * Setups for showing tag list
      *
-     * @param data - list with tags
+     * @param data - list with text
      */
     override fun setupForSuccess(data: List<String>?) {
         if (data?.isNotEmpty() == true) {

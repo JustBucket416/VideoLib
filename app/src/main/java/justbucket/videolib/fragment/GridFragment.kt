@@ -32,7 +32,7 @@ import kotlinx.android.synthetic.main.recycler_video_card.view.*
 
 /**
  * A [Fragment] subclass which acts as the main application fragment, offering video and
- * tags manipulation. Kinda like god object anti-pattern, in a sense. Should be refactored.
+ * text manipulation. Kinda like god object anti-pattern, in a sense. Should be refactored.
  */
 class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
 
