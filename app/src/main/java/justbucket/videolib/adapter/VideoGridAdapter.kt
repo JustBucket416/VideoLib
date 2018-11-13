@@ -1,17 +1,12 @@
 package justbucket.videolib.adapter
 
 import android.graphics.drawable.Drawable
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.view.ActionMode
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
-import android.transition.TransitionSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -19,22 +14,16 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
-import justbucket.videolib.MainActivity
 import justbucket.videolib.R
-import justbucket.videolib.VideoActivity
-import justbucket.videolib.domain.model.SwitchValues
-import justbucket.videolib.extension.inTransaction
-import justbucket.videolib.fragment.GridFragment
-import justbucket.videolib.fragment.ImagePagerFragment
 import justbucket.videolib.graphics.SelectorCheckDrawable
 import justbucket.videolib.model.VideoPres
-import justbucket.videolib.service.MediaPlayerService
-import justbucket.videolib.viewmodel.GridViewModel
 import kotlinx.android.synthetic.main.recycler_video_card.view.*
-import java.util.concurrent.atomic.AtomicBoolean
 
-class VideoGridAdapter(fragment: GridFragment, private val width: Int, private val height: Int,
-                       private val items: ArrayList<VideoPres>)
+class VideoGridAdapter(private val width: Int,
+                       private val height: Int,
+                       private val requestManager: RequestManager,
+                       private val viewHolderListener: ViewHolderListener,
+                       private val items: List<VideoPres>)
     : RecyclerView.Adapter<VideoGridAdapter.VideoHolder>() {
 
     interface ViewHolderListener {
@@ -46,9 +35,6 @@ class VideoGridAdapter(fragment: GridFragment, private val width: Int, private v
         fun onItemLongClicked()
     }
 
-    private val viewHolderListener = ViewHolderListenerImpl(fragment, items, fragment.ActionModeCallback(items))
-    private val requestManager = Glide.with(fragment)
-
     init {
         setHasStableIds(true)
     }
@@ -57,7 +43,6 @@ class VideoGridAdapter(fragment: GridFragment, private val width: Int, private v
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_video_card, parent, false)
         return VideoHolder(view, width, height, viewHolderListener, requestManager)
     }
-
 
     override fun onBindViewHolder(holder: VideoHolder, position: Int) {
         holder.onBind(position, items[position])
@@ -71,74 +56,6 @@ class VideoGridAdapter(fragment: GridFragment, private val width: Int, private v
         super.onViewRecycled(holder)
         holder.image.setImageDrawable(null)
         requestManager.clear(holder.image)
-    }
-
-    fun updateItems(newItems: List<VideoPres>) {
-        items.clear()
-        items.addAll(newItems)
-        notifyDataSetChanged()
-    }
-
-    class ViewHolderListenerImpl(private val fragment: GridFragment,
-                                 private val items: ArrayList<VideoPres>,
-                                 private val callback: ActionMode.Callback) : ViewHolderListener {
-
-        private val enterTransitionStarted = AtomicBoolean()
-
-        override fun onLoadCompleted(view: ImageView, adapterPosition: Int) {
-            Log.i("image-loaded", "$adapterPosition - ${enterTransitionStarted.get()}")
-            // Call startPostponedEnterTransition only when the 'selected' image loading is completed.
-            if (MainActivity.currentPosition != adapterPosition) {
-                return
-            }
-            if (enterTransitionStarted.getAndSet(true)) {
-                return
-            }
-            fragment.startPostponedEnterTransition()
-        }
-
-        override fun onItemClicked(view: View, adapterPosition: Int) {
-            if (MainActivity.actionMode != null) {
-                items[adapterPosition].selected = !items[adapterPosition].selected
-                (view.foreground as SelectorCheckDrawable).setSelected(items[adapterPosition].selected, true)
-                if (items.all { !it.selected }) {
-                    MainActivity.actionMode?.finish()
-                }
-            } else {
-                // Update the position.
-                MainActivity.currentPosition = adapterPosition
-                when ((fragment.viewModel as GridViewModel).switchMode) {
-                    SwitchValues.SWITCH_OPEN_DETAILS -> {
-                        // Exclude the clicked card from the exit transition (e.g. the card will disappear immediately
-                        // instead of fading out with the rest to prevent an overlapping animation of fade and move).
-                        (fragment.exitTransition as TransitionSet).excludeTarget(view, true)
-
-                        val transitioningView = view.recycler_video_image
-                        transitioningView.transitionName = items[adapterPosition].id.toString()
-                        fragment.fragmentManager?.inTransaction {
-                            setReorderingAllowed(true) // Optimize for shared element transition
-                                    .addSharedElement(transitioningView, transitioningView.transitionName)
-                                    .replace(R.id.fragment_container, ImagePagerFragment.newInstance(items), ImagePagerFragment::class.java
-                                            .simpleName)
-                                    .addToBackStack(null)
-                        }
-                    }
-                    SwitchValues.SWITCH_PLAY_VIDEO -> {
-                        fragment.startActivity(VideoActivity.newIntent(fragment.context, items))
-
-                    }
-                    SwitchValues.SWITCH_PLAY_AUDIO -> {
-                        fragment.activity?.startService(
-                                MediaPlayerService.newUnboundIntent(fragment.context,
-                                        ArrayList(items), adapterPosition))
-                    }
-                }
-            }
-        }
-
-        override fun onItemLongClicked() {
-            MainActivity.actionMode = (fragment.activity as AppCompatActivity).startSupportActionMode(callback)
-        }
     }
 
     class VideoHolder(itemView: View,
@@ -189,7 +106,7 @@ class VideoGridAdapter(fragment: GridFragment, private val width: Int, private v
                             }
                         }
                     })
-
+            selectorCheckDrawable.setSelected(videoPres.selected, false)
             cardView.setOnLongClickListener {
                 setChecked(true)
                 videoPres.selected = true
@@ -201,6 +118,5 @@ class VideoGridAdapter(fragment: GridFragment, private val width: Int, private v
         fun setChecked(checked: Boolean) {
             selectorCheckDrawable.setSelected(checked, true)
         }
-
     }
 }

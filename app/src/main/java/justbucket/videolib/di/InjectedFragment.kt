@@ -14,10 +14,10 @@ import justbucket.videolib.state.ResourceState
 import justbucket.videolib.viewmodel.BaseViewModel
 import javax.inject.Inject
 
-abstract class InjectedFragment<Data> : Fragment() {
+abstract class InjectedFragment<Data, T : BaseViewModel<Data>> : Fragment() {
 
     abstract val layoutId: Int
-    abstract val viewModel: BaseViewModel<Data>
+    abstract val viewModel: T
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory

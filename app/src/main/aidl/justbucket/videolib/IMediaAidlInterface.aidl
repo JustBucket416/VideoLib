@@ -16,4 +16,6 @@ interface IMediaAidlInterface {
             void playAudio(String audio);
 
             void seekTo(int millis);
+
+            void stopService();
 }

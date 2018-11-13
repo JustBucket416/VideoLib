@@ -9,15 +9,15 @@ import android.view.View
 import justbucket.videolib.R
 import justbucket.videolib.adapter.TagListAdapter
 import justbucket.videolib.di.InjectedDialogFragment
+import justbucket.videolib.domain.utils.getOrDie
 import justbucket.videolib.model.VideoPres
 import justbucket.videolib.viewmodel.ActionViewModel
-import justbucket.videolib.viewmodel.BaseViewModel
 import kotlinx.android.synthetic.main.fragment_dialog_actionmode.*
 
 /**
  * An [InjectedDialogFragment] subclass that shows tag selection UI
  */
-class SelectTagsFragment : InjectedDialogFragment<List<String>>() {
+class SelectTagsFragment : InjectedDialogFragment<List<String>, ActionViewModel>() {
 
     companion object {
 
@@ -38,17 +38,16 @@ class SelectTagsFragment : InjectedDialogFragment<List<String>>() {
     override val layoutId: Int
         get() = R.layout.fragment_dialog_actionmode
 
-    override val viewModel: BaseViewModel<List<String>>
+    override val viewModel: ActionViewModel
         get() = ViewModelProviders.of(this, viewModelFactory)[ActionViewModel::class.java]
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         selector_button_apply.setOnClickListener {
             if (arguments == null) throw IllegalStateException("arguments are null!")
-            val videos = arguments!!.getParcelableArrayList<VideoPres>(SELECTED_VIDEOS_LIST_KEY)
-            (viewModel as ActionViewModel).applyTags(videos, tagList)
+            val videos = arguments?.getParcelableArrayList<VideoPres>(SELECTED_VIDEOS_LIST_KEY).getOrDie(SELECTED_VIDEOS_LIST_KEY)
+            viewModel.applyTags(videos, tagList)
             dismiss()
         }
-
         selector_button_reset.setOnClickListener { adapter.parseSelected(emptyList()) }
     }
 
@@ -66,7 +65,7 @@ class SelectTagsFragment : InjectedDialogFragment<List<String>>() {
     /**
      * Setups for showing tag list
      *
-     * @param data - list with tags
+     * @param data - list with text
      */
     override fun setupForSuccess(data: List<String>?) {
         if (data?.isNotEmpty() == true) {
@@ -84,5 +83,4 @@ class SelectTagsFragment : InjectedDialogFragment<List<String>>() {
     override fun setupForLoading() {
         selector_text_no_tags.visibility = View.GONE
     }
-
 }

@@ -4,7 +4,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
-import android.media.session.MediaSessionManager
 import android.os.IBinder
 import android.os.Parcel
 import android.os.Parcelable
@@ -23,7 +22,6 @@ class MediaPlayerService : DaggerService() {
     private val mp = MediaPlayer()
     private lateinit var audioLink: String
     private var millis = 0
-    private val eventReceiver = getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
 
     override fun onBind(intent: Intent): IBinder {
         return object : IMediaAidlInterface.Stub() {
@@ -48,6 +46,10 @@ class MediaPlayerService : DaggerService() {
 
             override fun seekTo(millis: Int) {
                 mp.seekTo(millis)
+            }
+
+            override fun stopService() {
+                stopSelf()
             }
         }
     }

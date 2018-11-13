@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
 /**
  * A [Gson] model class
  */
-class Item {
+data class Item(
 
-    @SerializedName("id")
-    @Expose
-    var id: String? = null
-    @SerializedName("snippet")
-    @Expose
-    var snippet: Snippet? = null
+        @SerializedName("id")
+        @Expose
+        var id: String,
+        @SerializedName("snippet")
+        @Expose
+        var snippet: Snippet
 
-}
+)

@@ -29,6 +29,7 @@
         <activity
             android:name=".ImportActivity"
             android:excludeFromRecents="true"
+            android:taskAffinity=":importTask"
             android:launchMode="singleInstance"
             android:theme="@style/OverlayActivity">
             <intent-filter>

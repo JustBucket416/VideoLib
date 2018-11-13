@@ -11,19 +11,24 @@ import justbucket.videolib.adapter.SourceImageAdapter
 import justbucket.videolib.adapter.TagListAdapter
 import justbucket.videolib.di.InjectedDialogFragment
 import justbucket.videolib.model.FilterPres
-import justbucket.videolib.viewmodel.BaseViewModel
 import justbucket.videolib.viewmodel.FilterViewModel
 import kotlinx.android.synthetic.main.fragment_dialog_filter.*
 
 /**
  * A [DialogFragment] subclass that shows the video filtering UI
  */
-class FilterFragment : InjectedDialogFragment<Triple<List<String>, List<Int>, FilterPres>>(),
+class FilterFragment : InjectedDialogFragment<Pair<List<String>, List<Int>>, FilterViewModel>(),
         GridFragment.FilterProvider {
 
     companion object {
-        fun newInstance(): FilterFragment {
-            return FilterFragment()
+        private const val FILTER_KEY = "filter-key"
+
+        fun newInstance(filterPres: FilterPres): FilterFragment {
+            return FilterFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(FILTER_KEY, filterPres)
+                }
+            }
         }
     }
 
@@ -34,18 +39,24 @@ class FilterFragment : InjectedDialogFragment<Triple<List<String>, List<Int>, Fi
     override val layoutId: Int
         get() = R.layout.fragment_dialog_filter
 
-    override val viewModel: BaseViewModel<Triple<List<String>, List<Int>, FilterPres>>
+    override val viewModel: FilterViewModel
         get() = ViewModelProviders.of(this, viewModelFactory)[FilterViewModel::class.java]
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         diafrag_recycler_tags.addItemDecoration(DividerItemDecoration(context, VERTICAL))
+        diafrag_toggle.setOnCheckedChangeListener { _, isChecked ->
+            filterPres.isAllAnyCheck = isChecked
+        }
+        arguments?.run {
+            filterPres = getParcelable(FILTER_KEY) ?: return
+        }
     }
 
-    override fun setupForSuccess(data: Triple<List<String>, List<Int>, FilterPres>?) {
-        val (tags: List<String>, sources: List<Int>, filter: FilterPres) = data!!
-        filterPres = filter
-        diafrag_toggle.isChecked = filter.isAllAnyCheck
-        diafrag_edit_search.setText(filter.text)
+    override fun setupForSuccess(data: Pair<List<String>, List<Int>>?) {
+        if (data == null || !this::filterPres.isInitialized) return
+        val (tags: List<String>, sources: List<Int>) = data
+        diafrag_toggle.isChecked = filterPres.isAllAnyCheck
+        diafrag_edit_search.setText(filterPres.text)
         showTags(tags)
         showSources(sources)
     }
@@ -60,7 +71,7 @@ class FilterFragment : InjectedDialogFragment<Triple<List<String>, List<Int>, Fi
     /**
      * Shows successfully loaded videos
      *
-     * @param tags - loaded tags
+     * @param tags - loaded text
      */
     private fun showTags(tags: List<String>) {
         if (tags.isNotEmpty()) {
@@ -73,7 +84,7 @@ class FilterFragment : InjectedDialogFragment<Triple<List<String>, List<Int>, Fi
             })
             tagAdapter.parseSelected(filterPres.tags)
             diafrag_recycler_tags.adapter = tagAdapter
-        } else setupForError("No tags found")
+        } else setupForError("No text found")
     }
 
     private fun showSources(sources: List<Int>) {
@@ -111,5 +122,4 @@ class FilterFragment : InjectedDialogFragment<Triple<List<String>, List<Int>, Fi
         diafrag_text_no_tags.visibility = View.VISIBLE
         diafrag_text_no_tags.text = message ?: return
     }
-
 }

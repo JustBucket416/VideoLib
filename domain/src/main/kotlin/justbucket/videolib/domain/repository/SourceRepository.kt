@@ -10,6 +10,6 @@ interface SourceRepository {
      *
      * @return list that contains all sources
      */
-    fun getAllSources(): List<Int>
+    suspend fun getAllSources(): List<Int>
 
 }

@@ -41,10 +41,10 @@ class GridViewModel @Inject constructor(
         saveFilter.execute(params = SaveFilter.Params.createParams(filterMapper.mapToDomain(lastFilter)))
     }
 
-    fun getFilter() {
+    fun loadFilter() {
         loadFilter.execute({
             lastFilter = filterMapper.mapToPresentation(it)
-            fetchVideosInternal()
+            fetchVideos()
         })
     }
 
@@ -55,10 +55,13 @@ class GridViewModel @Inject constructor(
     /**
      * Requests videos from domain
      */
-    fun fetchVideos(filterPres: FilterPres) {
-        if (lastFilter == filterPres) return
-        lastFilter = filterPres
-        fetchVideosInternal()
+    fun fetchVideos() {
+        liveData.postValue(Resource.loading())
+        getVideos.execute(onResult = { list ->
+            liveData.postValue(Resource.success(list.map { videoMapper.mapToPresentation(it) }))
+        },
+                params = GetVideos.Params.createParams(filterMapper.mapToDomain(lastFilter))
+        )
     }
 
     /**
@@ -69,7 +72,7 @@ class GridViewModel @Inject constructor(
     fun deleteVideos(videos: List<VideoPres>) {
         for ((index, videoPres) in videos.withIndex()) {
             deleteVideo.execute({
-                if (index == videos.size - 1) fetchVideosInternal()
+                if (index == videos.size - 1) fetchVideos()
             }, DeleteVideo.Params.createParams(videoMapper.mapToDomain(videoPres)))
         }
     }
@@ -140,16 +143,17 @@ class GridViewModel @Inject constructor(
      *
      * @param text - a tag to delete
      */
-    fun deleteTag(text: String) {
-        deleteTag.execute(params = DeleteTag.Params.createParams(text))
+    fun deleteTags(tags: List<String>) {
+        tags.forEachIndexed { index, string ->
+            deleteTag.execute(onResult = {
+                lastFilter.tags.remove(string)
+                if (index == tags.size - 1) fetchVideos()
+            },
+                    params = DeleteTag.Params.createParams(string))
+        }
+
     }
 
-    private fun fetchVideosInternal() {
-        liveData.postValue(Resource.loading())
-        getVideos.execute(onResult = { list ->
-            liveData.postValue(Resource.success(list.map { videoMapper.mapToPresentation(it) }))
-        },
-                params = GetVideos.Params.createParams(filterMapper.mapToDomain(lastFilter)))
-    }
+    fun getFilter() = lastFilter
 
 }
