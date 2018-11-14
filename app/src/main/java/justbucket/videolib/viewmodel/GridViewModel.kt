@@ -11,7 +11,9 @@ import justbucket.videolib.domain.feature.tag.DeleteTag
 import justbucket.videolib.domain.feature.tag.GetAllTags
 import justbucket.videolib.domain.feature.video.DeleteVideo
 import justbucket.videolib.domain.feature.video.GetVideos
+import justbucket.videolib.domain.feature.video.SubscribeToVideos
 import justbucket.videolib.domain.model.SwitchValues
+import justbucket.videolib.domain.model.Video
 import justbucket.videolib.mapper.FilterMapper
 import justbucket.videolib.mapper.VideoMapper
 import justbucket.videolib.model.FilterPres
@@ -20,6 +22,7 @@ import justbucket.videolib.state.Resource
 import javax.inject.Inject
 
 class GridViewModel @Inject constructor(
+        private val subscribeToVideos: SubscribeToVideos,
         private val getVideos: GetVideos,
         private val getAllTags: GetAllTags,
         private val videoMapper: VideoMapper,
@@ -35,6 +38,9 @@ class GridViewModel @Inject constructor(
     private lateinit var lastFilter: FilterPres
     var switchMode = 0
         private set
+    private val unit: (List<Video>) -> Unit = { videoList ->
+        liveData.postValue(Resource.success(videoList.map { videoMapper.mapToPresentation(it) }))
+    }
 
     override fun onCleared() {
         saveDetailsSwitchState()
@@ -58,7 +64,8 @@ class GridViewModel @Inject constructor(
     fun fetchVideos() {
         liveData.postValue(Resource.loading())
         getVideos.execute(onResult = { list ->
-            liveData.postValue(Resource.success(list.map { videoMapper.mapToPresentation(it) }))
+            unit(list)
+            subscribeToVideos.execute(params = SubscribeToVideos.Params.createParams(unit, filterMapper.mapToDomain(lastFilter)))
         },
                 params = GetVideos.Params.createParams(filterMapper.mapToDomain(lastFilter))
         )
@@ -141,7 +148,7 @@ class GridViewModel @Inject constructor(
     /**
      * Requests the domain to delete a tag
      *
-     * @param text - a tag to delete
+     * @param tags - a tag to delete
      */
     fun deleteTags(tags: List<String>) {
         tags.forEachIndexed { index, string ->

@@ -51,32 +51,6 @@ class VideoActivity : AppCompatActivity() {
         }
     }
 
-    private val mHideHandler = Handler()
-    private val mHidePart2Runnable = Runnable {
-        // Delayed removal of status and navigation bar
-
-        // Note that some of these constants are new as of API 16 (Jelly Bean)
-        // and API 19 (KitKat). It is safe to use them, as they are inlined
-        // at compile-time and do nothing on earlier devices.
-        fullscreen_video.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LOW_PROFILE or
-                View.SYSTEM_UI_FLAG_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-    }
-    private val mShowPart2Runnable = Runnable {
-        // Delayed display of UI elements
-        supportActionBar?.show()
-        fullscreen_content_controls.visibility = View.VISIBLE
-    }
-    private var mVisible: Boolean = false
-    private val mHideRunnable = Runnable { hide() }
-    private lateinit var videoList: ArrayList<VideoPres>
-    private var play = true
-    private var mediaInterface: IMediaAidlInterface? = null
-
     private val mUpdateTimeTask = object : Runnable {
         override fun run() {
             val totalDuration = fullscreen_video.duration.toLong()
@@ -108,6 +82,32 @@ class VideoActivity : AppCompatActivity() {
             mediaInterface = null
         }
     }
+
+    private val mHidePart2Runnable = Runnable {
+        // Delayed removal of status and navigation bar
+
+        // Note that some of these constants are new as of API 16 (Jelly Bean)
+        // and API 19 (KitKat). It is safe to use them, as they are inlined
+        // at compile-time and do nothing on earlier devices.
+        fullscreen_video.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LOW_PROFILE or
+                View.SYSTEM_UI_FLAG_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+    }
+    private val mShowPart2Runnable = Runnable {
+        // Delayed display of UI elements
+        supportActionBar?.show()
+        fullscreen_content_controls.visibility = View.VISIBLE
+    }
+    private val mHideRunnable = Runnable { hide() }
+    private val mHideHandler = Handler()
+    private lateinit var videoList: ArrayList<VideoPres>
+    private var mVisible: Boolean = false
+    private var play = true
+    private var mediaInterface: IMediaAidlInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -194,9 +194,11 @@ class VideoActivity : AppCompatActivity() {
         }
 
         fullscreen_video.setOnCompletionListener {
-            if (MainActivity.currentPosition != videoList.size - 1)
+            if (MainActivity.currentPosition != videoList.size - 1) {
                 playVideo(videoList[++MainActivity.currentPosition])
-            else playVideo(videoList[0])
+            } else {
+                playVideo(videoList[0])
+            }
         }
 
         // Upon interacting with UI controls, delay any scheduled hide()
@@ -240,8 +242,7 @@ class VideoActivity : AppCompatActivity() {
     }
 
     /**
-     * Plays the given video. Static leak is suppressed because activity is
-     * unable to recreate while using the asynctask
+     * Plays the given video
      */
     @SuppressLint("StaticFieldLeak")
     private fun playVideo(video: VideoPres) {

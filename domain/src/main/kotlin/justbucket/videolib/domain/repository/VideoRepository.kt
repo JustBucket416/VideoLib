@@ -2,7 +2,9 @@ package justbucket.videolib.domain.repository
 
 import justbucket.videolib.domain.exception.Failure
 import justbucket.videolib.domain.functional.Either
+import justbucket.videolib.domain.model.Filter
 import justbucket.videolib.domain.model.Video
+import kotlin.coroutines.CoroutineContext
 
 /**
  * An video repository interface
@@ -47,6 +49,8 @@ interface VideoRepository {
      *
      * @return a list of [Video] instances
      */
-    suspend fun getAllVideos(): List<Video>
+    suspend fun getFilteredVideos(filter: Filter): List<Video>
+
+    suspend fun subscribeToVideos(onNext: (List<Video>) -> Unit, filter: Filter, coroutineContext: CoroutineContext)
 
 }

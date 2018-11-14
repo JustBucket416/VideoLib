@@ -49,9 +49,9 @@ class DataModule {
 
     @Provides
     fun provideVideoRepository(videoDatabase: VideoDatabase, videoMapper: VideoMapper,
-                               memoryRepository: MemoryRepository,
+                               filterMapper: FilterMapper, memoryRepository: MemoryRepository,
                                youtubeRepository: YoutubeRepository): VideoRepository {
-        return VideoRepositoryImpl(videoDatabase, videoMapper, memoryRepository, youtubeRepository)
+        return VideoRepositoryImpl(videoDatabase, videoMapper, filterMapper, memoryRepository, youtubeRepository)
     }
 
     @Provides
