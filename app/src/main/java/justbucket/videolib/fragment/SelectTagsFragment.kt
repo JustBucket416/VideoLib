@@ -10,6 +10,7 @@ import justbucket.videolib.R
 import justbucket.videolib.adapter.TagListAdapter
 import justbucket.videolib.di.InjectedDialogFragment
 import justbucket.videolib.domain.utils.getOrDie
+import justbucket.videolib.model.TagPres
 import justbucket.videolib.model.VideoPres
 import justbucket.videolib.viewmodel.ActionViewModel
 import kotlinx.android.synthetic.main.fragment_dialog_actionmode.*
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_dialog_actionmode.*
 /**
  * An [InjectedDialogFragment] subclass that shows tag selection UI
  */
-class SelectTagsFragment : InjectedDialogFragment<List<String>, ActionViewModel>() {
+class SelectTagsFragment : InjectedDialogFragment<List<TagPres>, ActionViewModel>() {
 
     companion object {
 
@@ -32,7 +33,7 @@ class SelectTagsFragment : InjectedDialogFragment<List<String>, ActionViewModel>
         }
     }
 
-    private val tagList = mutableListOf<String>()
+    private val tagList = mutableListOf<TagPres>()
     private lateinit var adapter: TagListAdapter
 
     override val layoutId: Int
@@ -67,10 +68,10 @@ class SelectTagsFragment : InjectedDialogFragment<List<String>, ActionViewModel>
      *
      * @param data - list with text
      */
-    override fun setupForSuccess(data: List<String>?) {
+    override fun setupForSuccess(data: List<TagPres>?) {
         if (data?.isNotEmpty() == true) {
             adapter = TagListAdapter(data, object : TagListAdapter.TagHolderListener {
-                override fun onTagCheckChange(tag: String, checked: Boolean) {
+                override fun onTagCheckChange(tag: TagPres, checked: Boolean) {
                     if (checked) tagList.add(tag) else tagList.remove(tag)
                 }
             })

@@ -1,5 +1,6 @@
 package justbucket.videolib.data.remote
 
+import justbucket.videolib.data.model.TagEntity
 import justbucket.videolib.domain.exception.Failure
 import justbucket.videolib.domain.functional.Either
 
@@ -15,7 +16,7 @@ interface YoutubeRepository {
      *
      * @return a list of video entities
      */
-    suspend fun loadPlaylist(link: String, tags: List<String>): Either<Failure, Boolean>
+    suspend fun loadPlaylist(link: String, tags: List<TagEntity>): Either<Failure, Boolean>
 
 
     /**
@@ -25,5 +26,5 @@ interface YoutubeRepository {
      *
      * @return a video entity
      */
-    suspend fun loadVideo(link: String, tags: List<String>): Either<Failure, Boolean>
+    suspend fun loadVideo(link: String, tags: List<TagEntity>): Either<Failure, Boolean>
 }

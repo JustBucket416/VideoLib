@@ -14,9 +14,10 @@ import justbucket.videolib.domain.feature.video.GetVideos
 import justbucket.videolib.domain.feature.video.SubscribeToVideos
 import justbucket.videolib.domain.model.SwitchValues
 import justbucket.videolib.domain.model.Video
-import justbucket.videolib.mapper.FilterMapper
-import justbucket.videolib.mapper.VideoMapper
+import justbucket.videolib.mapper.mapToDomain
+import justbucket.videolib.mapper.mapToPresentation
 import justbucket.videolib.model.FilterPres
+import justbucket.videolib.model.TagPres
 import justbucket.videolib.model.VideoPres
 import justbucket.videolib.state.Resource
 import javax.inject.Inject
@@ -25,37 +26,35 @@ class GridViewModel @Inject constructor(
         private val subscribeToVideos: SubscribeToVideos,
         private val getVideos: GetVideos,
         private val getAllTags: GetAllTags,
-        private val videoMapper: VideoMapper,
         private val deleteVideo: DeleteVideo,
         private val addTag: AddTag,
         private val deleteTag: DeleteTag,
         private val loadDetailsState: LoadDetailsState,
         private val saveDetailsState: SaveDetailsState,
         private val loadFilter: LoadFilter,
-        private val saveFilter: SaveFilter,
-        private val filterMapper: FilterMapper) : BaseViewModel<List<VideoPres>>() {
+        private val saveFilter: SaveFilter) : BaseViewModel<List<VideoPres>>() {
 
     private lateinit var lastFilter: FilterPres
     var switchMode = 0
         private set
     private val unit: (List<Video>) -> Unit = { videoList ->
-        liveData.postValue(Resource.success(videoList.map { videoMapper.mapToPresentation(it) }))
+        liveData.postValue(Resource.success(videoList.map { it.mapToPresentation() }))
     }
 
     override fun onCleared() {
         saveDetailsSwitchState()
-        saveFilter.execute(params = SaveFilter.Params.createParams(filterMapper.mapToDomain(lastFilter)))
+        saveFilter.execute(params = SaveFilter.Params.createParams(lastFilter.mapToDomain()))
     }
 
     fun loadFilter() {
         loadFilter.execute({
-            lastFilter = filterMapper.mapToPresentation(it)
+            lastFilter = it.mapToPresentation()
             fetchVideos()
         })
     }
 
     fun saveFilter(filter: FilterPres) {
-        saveFilter.execute(params = SaveFilter.Params.createParams(filterMapper.mapToDomain(filter)))
+        saveFilter.execute(params = SaveFilter.Params.createParams(filter.mapToDomain()))
     }
 
     /**
@@ -65,9 +64,9 @@ class GridViewModel @Inject constructor(
         liveData.postValue(Resource.loading())
         getVideos.execute(onResult = { list ->
             unit(list)
-            subscribeToVideos.execute(params = SubscribeToVideos.Params.createParams(unit, filterMapper.mapToDomain(lastFilter)))
+            subscribeToVideos.execute(params = SubscribeToVideos.Params.createParams(unit, lastFilter.mapToDomain()))
         },
-                params = GetVideos.Params.createParams(filterMapper.mapToDomain(lastFilter))
+                params = GetVideos.Params.createParams(lastFilter.mapToDomain())
         )
     }
 
@@ -80,7 +79,7 @@ class GridViewModel @Inject constructor(
         for ((index, videoPres) in videos.withIndex()) {
             deleteVideo.execute({
                 if (index == videos.size - 1) fetchVideos()
-            }, DeleteVideo.Params.createParams(videoMapper.mapToDomain(videoPres)))
+            }, DeleteVideo.Params.createParams(videoPres.mapToDomain()))
         }
     }
 
@@ -141,8 +140,12 @@ class GridViewModel @Inject constructor(
      *
      * @param func - the callback function because we don't want callback hell
      */
-    fun getAllTags(func: (tags: List<String>) -> Unit) {
-        getAllTags.execute(func)
+    fun getAllTags(func: (tags: List<TagPres>) -> Unit) {
+        getAllTags.execute(onResult = { list ->
+            func(list.map {
+                it.mapToPresentation()
+            })
+        })
     }
 
     /**
@@ -150,13 +153,13 @@ class GridViewModel @Inject constructor(
      *
      * @param tags - a tag to delete
      */
-    fun deleteTags(tags: List<String>) {
-        tags.forEachIndexed { index, string ->
+    fun deleteTags(tags: List<TagPres>) {
+        tags.forEachIndexed { index, tagPres ->
             deleteTag.execute(onResult = {
-                lastFilter.tags.remove(string)
+                lastFilter.tags.remove(tagPres)
                 if (index == tags.size - 1) fetchVideos()
             },
-                    params = DeleteTag.Params.createParams(string))
+                    params = DeleteTag.Params.createParams(tagPres.mapToDomain()))
         }
 
     }

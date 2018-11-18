@@ -1,5 +1,6 @@
 package justbucket.videolib.domain.feature.tag
 
+import justbucket.videolib.domain.model.Tag
 import justbucket.videolib.domain.repository.TagRepository
 import justbucket.videolib.domain.usecase.UseCase
 import javax.inject.Inject
@@ -15,9 +16,9 @@ class DeleteTag @Inject constructor(
         tagRepository.deleteTag(params.tag)
     }
 
-    data class Params internal constructor(val tag: String) {
+    data class Params internal constructor(val tag: Tag) {
         companion object {
-            fun createParams(tag: String) =
+            fun createParams(tag: Tag) =
                     Params(tag)
         }
     }

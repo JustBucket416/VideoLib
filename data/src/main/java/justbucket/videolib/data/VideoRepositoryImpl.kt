@@ -4,8 +4,9 @@ import android.arch.persistence.room.InvalidationTracker
 import android.os.Environment
 import justbucket.videolib.data.db.DBConstants
 import justbucket.videolib.data.db.VideoDatabase
-import justbucket.videolib.data.mapper.FilterMapper
-import justbucket.videolib.data.mapper.VideoMapper
+import justbucket.videolib.data.mapper.mapToData
+import justbucket.videolib.data.mapper.mapToDataEntities
+import justbucket.videolib.data.mapper.mapToDomain
 import justbucket.videolib.data.model.FilterEntity
 import justbucket.videolib.data.model.LinkEntity
 import justbucket.videolib.data.remote.MemoryRepository
@@ -13,16 +14,16 @@ import justbucket.videolib.data.remote.YoutubeRepository
 import justbucket.videolib.domain.exception.Failure
 import justbucket.videolib.domain.functional.Either
 import justbucket.videolib.domain.model.Filter
+import justbucket.videolib.domain.model.Tag
 import justbucket.videolib.domain.model.Video
 import justbucket.videolib.domain.repository.VideoRepository
+import justbucket.videolib.domain.utils.getOrDie
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class VideoRepositoryImpl @Inject constructor(
         private val videoDatabase: VideoDatabase,
-        private val videoMapper: VideoMapper,
-        private val filterMapper: FilterMapper,
         private val memoryRepository: MemoryRepository,
         private val youtubeRepository: YoutubeRepository)
     : VideoRepository {
@@ -31,53 +32,55 @@ class VideoRepositoryImpl @Inject constructor(
     private val shortPlaylistRegex = Regex("youtu\\.be.*playlist")
     private lateinit var lastObserver: VideoObserver
 
-    override suspend fun addVideo(link: String, tags: List<String>): Either<Failure, Boolean> {
+    override suspend fun addVideo(link: String, tags: List<Tag>): Either<Failure, Boolean> {
+        val entities = tags.map { it.mapToData() }
         return when {
             link.contains(Environment.getExternalStorageDirectory().absolutePath) -> {
-                memoryRepository.loadFromMemory(link, tags)
+                memoryRepository.loadFromMemory(link, entities)
             }
             ((link.contains(playlistRegex) || link.contains(shortPlaylistRegex)) && !link.contains("youtubeplaylist")) -> {
-                youtubeRepository.loadPlaylist(link.substring(link.lastIndexOf('=') + 1), tags)
+                youtubeRepository.loadPlaylist(link.substring(link.lastIndexOf('=') + 1), entities)
             }
             link.contains("www.youtube.com/watch?v=") -> {
-                youtubeRepository.loadVideo(link.substring(link.lastIndexOf('=') + 1), tags)
+                youtubeRepository.loadVideo(link.substring(link.lastIndexOf('=') + 1), entities)
             }
             link.contains("youtu.be/") -> {
-                youtubeRepository.loadVideo(link.substring(link.lastIndexOf('/') + 1), tags)
+                youtubeRepository.loadVideo(link.substring(link.lastIndexOf('/') + 1), entities)
             }
             else -> throw IllegalArgumentException("Unknown link")
         }
     }
 
     override suspend fun deleteVideo(video: Video) {
-        videoDatabase.videoDao().deleteVideo(videoMapper.mapToData(video).first)
+        videoDatabase.videoDao().deleteVideo(video.mapToDataEntities().first)
     }
 
     override suspend fun updateVideoTags(video: Video) {
         val linkDao = videoDatabase.linkDao()
+        val tagEntities = video.tags.map { it.mapToData() }
         linkDao.deleteAllLinks(video.id)
-        video.tags.forEach { linkDao.insertLink(LinkEntity(video.id, videoDatabase.tagDao().getTagId(it))) }
+        tagEntities.forEach { linkDao.insertLink(LinkEntity(video.id, it.id!!)) }
     }
 
-    override suspend fun addVideoTags(video: Video, tags: List<String>) {
+    override suspend fun addVideoTags(video: Video, tags: List<Tag>) {
         val linkDao = videoDatabase.linkDao()
         tags.forEach {
-            linkDao.insertLink(LinkEntity(video.id, videoDatabase.tagDao().getTagId(it)))
+            linkDao.insertLink(LinkEntity(video.id, it.id))
         }
     }
 
     override suspend fun getFilteredVideos(filter: Filter): List<Video> {
         val links = videoDatabase.linkDao().getAllLinks()
         val tags = videoDatabase.tagDao().getAllTags()
-        val filterEntity = filterMapper.mapToData(filter)
+        val filterEntity = filter.mapToData()
         val videoEntities = videoDatabase.videoDao().getAllVideos()
         return videoEntities.map { videoEntity ->
             val tagEntities = links.asSequence().filter { it.videoId == videoEntity.id }.map { linkEntity ->
-                tags.findLast {
+                tags.find {
                     linkEntity.tagId == it.id
-                }?.text!!
+                }.getOrDie("tag text")
             }.toList()
-            videoMapper.mapToDomain(Pair(videoEntity, tagEntities))
+            videoEntity.mapToDomain(tagEntities)
         }.filter { checkVideo(filterEntity, it) }
     }
 
@@ -91,7 +94,7 @@ class VideoRepositoryImpl @Inject constructor(
     }
 
     private fun checkVideo(filter: FilterEntity, video: Video): Boolean {
-        val (text, sources, allany, tags) = filter
+        val (text, sources, allany, tags) = filter.mapToDomain()
         if (text.isNotEmpty()) {
             if (!video.title.contains(text)) return false
         }

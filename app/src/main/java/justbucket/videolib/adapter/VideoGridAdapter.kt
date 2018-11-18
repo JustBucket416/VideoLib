@@ -52,6 +52,12 @@ class VideoGridAdapter(private val width: Int,
 
     override fun getItemId(position: Int) = items[position].id
 
+    override fun onViewRecycled(holder: VideoHolder) {
+        super.onViewRecycled(holder)
+        holder.image.setImageDrawable(null)
+        requestManager.clear(holder.image)
+    }
+
     class VideoHolder(itemView: View,
                       width: Int,
                       height: Int,

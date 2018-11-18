@@ -11,13 +11,14 @@ import justbucket.videolib.adapter.SourceImageAdapter
 import justbucket.videolib.adapter.TagListAdapter
 import justbucket.videolib.di.InjectedDialogFragment
 import justbucket.videolib.model.FilterPres
+import justbucket.videolib.model.TagPres
 import justbucket.videolib.viewmodel.FilterViewModel
 import kotlinx.android.synthetic.main.fragment_dialog_filter.*
 
 /**
  * A [DialogFragment] subclass that shows the video filtering UI
  */
-class FilterFragment : InjectedDialogFragment<Pair<List<String>, List<Int>>, FilterViewModel>(),
+class FilterFragment : InjectedDialogFragment<Pair<List<TagPres>, List<Int>>, FilterViewModel>(),
         GridFragment.FilterProvider {
 
     companion object {
@@ -52,9 +53,9 @@ class FilterFragment : InjectedDialogFragment<Pair<List<String>, List<Int>>, Fil
         }
     }
 
-    override fun setupForSuccess(data: Pair<List<String>, List<Int>>?) {
+    override fun setupForSuccess(data: Pair<List<TagPres>, List<Int>>?) {
         if (data == null || !this::filterPres.isInitialized) return
-        val (tags: List<String>, sources: List<Int>) = data
+        val (tags: List<TagPres>, sources: List<Int>) = data
         diafrag_toggle.isChecked = filterPres.isAllAnyCheck
         diafrag_edit_search.setText(filterPres.text)
         showTags(tags)
@@ -73,12 +74,12 @@ class FilterFragment : InjectedDialogFragment<Pair<List<String>, List<Int>>, Fil
      *
      * @param tags - loaded text
      */
-    private fun showTags(tags: List<String>) {
+    private fun showTags(tags: List<TagPres>) {
         if (tags.isNotEmpty()) {
             diafrag_recycler_tags.visibility = View.VISIBLE
             diafrag_text_no_tags.visibility = View.GONE
             tagAdapter = TagListAdapter(tags, object : TagListAdapter.TagHolderListener {
-                override fun onTagCheckChange(tag: String, checked: Boolean) {
+                override fun onTagCheckChange(tag: TagPres, checked: Boolean) {
                     if (checked) filterPres.tags.add(tag) else filterPres.tags.remove(tag)
                 }
             })

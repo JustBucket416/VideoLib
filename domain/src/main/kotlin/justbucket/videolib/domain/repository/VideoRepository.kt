@@ -3,6 +3,7 @@ package justbucket.videolib.domain.repository
 import justbucket.videolib.domain.exception.Failure
 import justbucket.videolib.domain.functional.Either
 import justbucket.videolib.domain.model.Filter
+import justbucket.videolib.domain.model.Tag
 import justbucket.videolib.domain.model.Video
 import kotlin.coroutines.CoroutineContext
 
@@ -19,7 +20,7 @@ interface VideoRepository {
      *
      * @return an [Either] instance
      */
-    suspend fun addVideo(link: String, tags: List<String>): Either<Failure, Boolean>
+    suspend fun addVideo(link: String, tags: List<Tag>): Either<Failure, Boolean>
 
     /**
      * Deletes a video from the db
@@ -42,7 +43,7 @@ interface VideoRepository {
      * @param video - a video instance
      * @param tags - a list of tags to add
      */
-    suspend fun addVideoTags(video: Video, tags: List<String>)
+    suspend fun addVideoTags(video: Video, tags: List<Tag>)
 
     /**
      * Loads all videos from the db

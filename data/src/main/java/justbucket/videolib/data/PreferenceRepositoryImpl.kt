@@ -1,21 +1,21 @@
 package justbucket.videolib.data
 
-import justbucket.videolib.data.mapper.FilterMapper
+import justbucket.videolib.data.mapper.mapToData
+import justbucket.videolib.data.mapper.mapToDomain
 import justbucket.videolib.data.sharedpreferences.PreferencesManager
 import justbucket.videolib.domain.model.Filter
 import justbucket.videolib.domain.repository.PreferenceRepository
 import javax.inject.Inject
 
 class PreferenceRepositoryImpl @Inject constructor(
-        private val preferencesManager: PreferencesManager,
-        private val filterMapper: FilterMapper) : PreferenceRepository {
+        private val preferencesManager: PreferencesManager) : PreferenceRepository {
 
     override suspend fun saveFilter(filter: Filter) {
-        preferencesManager.saveFilter(filterMapper.mapToData(filter))
+        preferencesManager.saveFilter(filter.mapToData())
     }
 
     override suspend fun loadFilter(): Filter {
-        return filterMapper.mapToDomain(preferencesManager.loadFilter())
+        return preferencesManager.loadFilter().mapToDomain()
     }
 
     override suspend fun saveDetailsSwitchState(state: Int) {

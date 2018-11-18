@@ -2,6 +2,7 @@ package justbucket.videolib.data.remote.youtube
 
 import justbucket.videolib.data.db.VideoDatabase
 import justbucket.videolib.data.model.LinkEntity
+import justbucket.videolib.data.model.TagEntity
 import justbucket.videolib.data.model.VideoEntity
 import justbucket.videolib.data.remote.YoutubeRepository
 import justbucket.videolib.data.remote.youtube.model.playlist.Item
@@ -20,9 +21,8 @@ class YoutubeRepositoryImpl @Inject constructor(
 
     private val videoDao = database.videoDao()
     private val linkDao = database.linkDao()
-    private val tagDao = database.tagDao()
 
-    override suspend fun loadPlaylist(link: String, tags: List<String>): Either<Failure, Boolean> {
+    override suspend fun loadPlaylist(link: String, tags: List<TagEntity>): Either<Failure, Boolean> {
         val response = youtubeAPI.getPlaylist(playlist = link).execute()
         return if (response.isSuccessful) {
             Either.Right(parseItems(response.body()?.nextPageToken,
@@ -33,7 +33,7 @@ class YoutubeRepositoryImpl @Inject constructor(
         } else Either.Left(Failure.NetworkFailure)
     }
 
-    override suspend fun loadVideo(link: String, tags: List<String>): Either<Failure, Boolean> {
+    override suspend fun loadVideo(link: String, tags: List<TagEntity>): Either<Failure, Boolean> {
         val response = youtubeAPI.getVideo(id = link).execute()
         if (response.isSuccessful) {
             response.body().run {
@@ -49,12 +49,12 @@ class YoutubeRepositoryImpl @Inject constructor(
                     val id = videoDao.insertVideo(VideoEntity(null, 1, item.snippet.title,
                             videoPath, thumbPath))
                     tags.forEach {
-                        linkDao.insertLink(LinkEntity(id, tagDao.getTagId(it)))
+                        linkDao.insertLink(LinkEntity(id, it.id!!))
                     }
                     Either.Right(true)
                 } else {
                     tags.forEach {
-                        linkDao.insertLink(LinkEntity(entity.id!!, tagDao.getTagId(it)))
+                        linkDao.insertLink(LinkEntity(entity.id!!, it.id!!))
                     }
                     Either.Right(false)
                 }
@@ -63,7 +63,7 @@ class YoutubeRepositoryImpl @Inject constructor(
         } else return Either.Left(Failure.NetworkFailure)
     }
 
-    private tailrec fun parseItems(token: String?, link: String, tags: List<String>, items: List<Item>, check: Boolean): Boolean {
+    private tailrec fun parseItems(token: String?, link: String, tags: List<TagEntity>, items: List<Item>, check: Boolean): Boolean {
         var innerCheck = check
         items.forEach { item ->
             val thumbPath: String = item.snippet.thumbnails.maxres?.url
@@ -80,12 +80,12 @@ class YoutubeRepositoryImpl @Inject constructor(
                         videoPath,
                         thumbPath))
                 tags.forEach {
-                    linkDao.insertLink(LinkEntity(id, tagDao.getTagId(it)))
+                    linkDao.insertLink(LinkEntity(id, it.id!!))
                 }
                 innerCheck = true
             } else {
                 tags.forEach {
-                    linkDao.insertLink(LinkEntity(entity.id!!, tagDao.getTagId(it)))
+                    linkDao.insertLink(LinkEntity(entity.id!!, it.id!!))
                 }
                 innerCheck = false
             }

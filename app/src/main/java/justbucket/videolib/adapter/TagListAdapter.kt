@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import justbucket.videolib.R
+import justbucket.videolib.model.TagPres
 
-class TagListAdapter(private val items: List<String>,
+class TagListAdapter(private val items: List<TagPres>,
                      private val tagHolderListener: TagHolderListener)
     : RecyclerView.Adapter<TagListAdapter.TagHolder>() {
 
@@ -15,7 +16,7 @@ class TagListAdapter(private val items: List<String>,
 
     interface TagHolderListener {
 
-        fun onTagCheckChange(tag: String, checked: Boolean)
+        fun onTagCheckChange(tag: TagPres, checked: Boolean)
     }
 
     init {
@@ -34,7 +35,7 @@ class TagListAdapter(private val items: List<String>,
 
     override fun getItemCount() = items.size
 
-    fun parseSelected(tags: List<String>) {
+    fun parseSelected(tags: List<TagPres>) {
         this.selectedItems = BooleanArray(items.size) { tags.contains(items[it]) }
         notifyDataSetChanged()
     }
@@ -46,12 +47,12 @@ class TagListAdapter(private val items: List<String>,
 
         private val checkBox = itemView as CheckBox
 
-        fun onBind(tag: String, checked: Boolean) {
-            checkBox.text = tag
+        fun onBind(tag: TagPres, checked: Boolean) {
+            checkBox.text = tag.text
             checkBox.isChecked = checked
             checkBox.setOnCheckedChangeListener { _, isChecked ->
                 selectedItems[adapterPosition] = isChecked
-                tagHolderListener.onTagCheckChange(checkBox.text.toString(), isChecked)
+                tagHolderListener.onTagCheckChange(tag, isChecked)
             }
         }
     }

@@ -4,7 +4,6 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.DialogInterface
-import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -23,8 +22,10 @@ import justbucket.videolib.R
 import justbucket.videolib.actionmode.ActionModeHelper
 import justbucket.videolib.di.InjectedFragment
 import justbucket.videolib.extension.dialogBox
+import justbucket.videolib.extension.isInHorizontalOrientation
 import justbucket.videolib.extension.myDialog
 import justbucket.videolib.model.FilterPres
+import justbucket.videolib.model.TagPres
 import justbucket.videolib.model.VideoPres
 import justbucket.videolib.viewmodel.GridViewModel
 import kotlinx.android.synthetic.main.fragment_grid.*
@@ -67,15 +68,14 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                         AlertDialog.Builder(requireContext()).myDialog(getString(R.string.remove_tags),
                                 getString(R.string.cancel),
                                 getString(R.string.remove)) { dialog, _ ->
-                            val tempString = ""
-                            val selectedTagList: List<String> = checkDelete.mapIndexed { index, check ->
+                            val selectedTagList: List<TagPres?> = checkDelete.mapIndexed { index, check ->
                                 if (check) tags[index]
-                                else tempString
-                            }.filter { it != tempString }
-                            viewModel.deleteTags(selectedTagList)
+                                else null
+                            }.filterNotNull()
+                            viewModel.deleteTags(selectedTagList as List<TagPres>)
                             dialog.dismiss()
                         }
-                                .setMultiChoiceItems(tags.toTypedArray(), checkDelete) { _, which, isChecked ->
+                                .setMultiChoiceItems(tags.map { it.text }.toTypedArray(), checkDelete) { _, which, isChecked ->
                                     checkDelete[which] = isChecked
                                 }
                                 .show()
@@ -100,6 +100,7 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
 
     override val layoutId: Int
         get() = R.layout.fragment_grid
+
     override val viewModel: GridViewModel
         get() = ViewModelProviders.of(this, viewModelFactory)[GridViewModel::class.java]
 
@@ -112,6 +113,7 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
         setHasOptionsMenu(true)
         postponeEnterTransition()
         prepareTransitions()
+
         grid_recycler.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
@@ -119,13 +121,14 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                 outRect.top = 2
             }
         })
+
         grid_layout.viewTreeObserver
                 .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         grid_layout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        val rowCount = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+                        val rowCount = if (context?.isInHorizontalOrientation() == true)
                             LANDSCAPE_ROW_NUM else PORTRAIT_ROW_NUM
-                        val colCount = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
+                        val colCount = if (context?.isInHorizontalOrientation() == true)
                             LANDSCAPE_COLUMN_NUM else PORTRAIT_COLUMN_NUM
                         grid_recycler.layoutManager = GridLayoutManager(context, colCount)
                         val width = grid_layout.width / colCount - 4
@@ -141,11 +144,14 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                                 actionModeHelper?.startActionMode()
                             }
                         } else {
+                            shouldScroll = true
                             viewModel.loadFilter()
                         }
                     }
                 })
+
         fab.setOptionsClick(fabMenuListener)
+
         grid_recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(grid_recycler: RecyclerView, dx: Int, dy: Int) {
                 if (dy < 0 && !fab.isShown)
@@ -237,9 +243,13 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
     }
 
     fun getSwitchMode() = viewModel.switchMode
+
     fun startActionMode() = actionModeHelper?.startActionMode()
+
     fun stopActionMode() = actionModeHelper?.stopActionMode()
+
     fun isInActionMode() = actionModeHelper?.isInActionMode() == true
+
     fun setActionItemListener(onActionEventListener: ActionModeHelper.OnActionEventListener) {
         actionModeHelper?.setActionClickListener(onActionEventListener)
     }
@@ -255,6 +265,7 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
      */
     private fun prepareTransitions() {
         exitTransition = TransitionInflater.from(context).inflateTransition(R.transition.grid_exit_transition)
+
         setExitSharedElementCallback(object : SharedElementCallback() {
             override fun onMapSharedElements(names: MutableList<String>, sharedElements: MutableMap<String, View>) {
                 val holder = grid_recycler.findViewHolderForAdapterPosition(MainActivity.currentPosition)
@@ -285,7 +296,7 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                 // layout manager children), or it's not completely visible.
                 if (viewAtPosition == null || layoutManager
                                 .isViewPartiallyVisible(viewAtPosition, false, true)) {
-                    grid_recycler.post { layoutManager?.scrollToPosition(MainActivity.currentPosition + 4) }
+                    grid_recycler.post { layoutManager?.scrollToPosition(MainActivity.currentPosition) }
                 }
             }
         })

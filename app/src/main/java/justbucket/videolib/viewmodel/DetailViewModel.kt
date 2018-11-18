@@ -2,22 +2,23 @@ package justbucket.videolib.viewmodel
 
 import justbucket.videolib.domain.feature.tag.GetAllTags
 import justbucket.videolib.domain.feature.video.SaveVideoTags
-import justbucket.videolib.mapper.VideoMapper
+import justbucket.videolib.mapper.mapToDomain
+import justbucket.videolib.mapper.mapToPresentation
+import justbucket.videolib.model.TagPres
 import justbucket.videolib.model.VideoPres
 import justbucket.videolib.state.Resource
 import javax.inject.Inject
 
 class DetailViewModel @Inject constructor(getAllTags: GetAllTags,
-                                          private val saveVideoTags: SaveVideoTags,
-                                          private val videoMapper: VideoMapper) : BaseViewModel<List<String>>() {
+                                          private val saveVideoTags: SaveVideoTags) : BaseViewModel<List<TagPres>>() {
 
     /**
      * Requests domain to load all tags
      */
     init {
         liveData.postValue(Resource.loading())
-        getAllTags.execute({
-            liveData.postValue(Resource.success(it))
+        getAllTags.execute({ list ->
+            liveData.postValue(Resource.success(list.map { it.mapToPresentation() }))
         })
     }
 
@@ -28,7 +29,7 @@ class DetailViewModel @Inject constructor(getAllTags: GetAllTags,
      */
     fun saveVideoTags(videoPres: VideoPres) {
         saveVideoTags.execute(params = SaveVideoTags.Params.createParams(
-                videoMapper.mapToDomain(videoPres)
+                videoPres.mapToDomain()
         ))
     }
 }

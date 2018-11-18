@@ -23,7 +23,7 @@ data class VideoEntity(
         var id: Long? = null,
 
         @ColumnInfo
-        var sourceId: Long,
+        var sourceId: Int,
 
         @ColumnInfo(name = COLUMN_VIDEO_TITLE)
         var title: String,

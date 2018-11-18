@@ -8,7 +8,7 @@ data class VideoPres(val id: Long,
                      val videoPath: String,
                      val thumbPath: String,
                      val source: Int,
-                     var tags: MutableList<String>,
+                     var tags: MutableList<TagPres>,
                      var selected: Boolean = false) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
@@ -16,7 +16,7 @@ data class VideoPres(val id: Long,
             parcel.readString(),
             parcel.readString(),
             parcel.readInt(),
-            parcel.createStringArrayList(),
+            parcel.createTypedArrayList(TagPres.CREATOR),
             parcel.readByte() != 0.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -25,7 +25,7 @@ data class VideoPres(val id: Long,
         parcel.writeString(videoPath)
         parcel.writeString(thumbPath)
         parcel.writeInt(source)
-        parcel.writeStringList(tags)
+        parcel.writeTypedList(tags)
         parcel.writeByte(if (selected) 1 else 0)
     }
 

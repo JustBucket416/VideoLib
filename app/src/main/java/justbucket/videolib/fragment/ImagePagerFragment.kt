@@ -17,11 +17,12 @@ import justbucket.videolib.adapter.ImagePagerAdapter
 import justbucket.videolib.adapter.PortraitLayoutManager
 import justbucket.videolib.adapter.TagListAdapter
 import justbucket.videolib.di.InjectedFragment
+import justbucket.videolib.model.TagPres
 import justbucket.videolib.model.VideoPres
 import justbucket.videolib.viewmodel.DetailViewModel
 import kotlinx.android.synthetic.main.fragment_imange_pager.*
 
-class ImagePagerFragment : InjectedFragment<List<String>, DetailViewModel>() {
+class ImagePagerFragment : InjectedFragment<List<TagPres>, DetailViewModel>() {
 
     private lateinit var videoList: List<VideoPres>
     private lateinit var adapter: TagListAdapter
@@ -58,16 +59,18 @@ class ImagePagerFragment : InjectedFragment<List<String>, DetailViewModel>() {
             postponeEnterTransition()
         }
     }
+
     override fun setupForError(message: String?) {
         text_empty_tags.visibility = View.VISIBLE
         recycler_detail.visibility = View.GONE
         text_empty_tags.text = message
     }
-    override fun setupForSuccess(data: List<String>?) {
+
+    override fun setupForSuccess(data: List<TagPres>?) {
         if (data != null) {
             adapter = TagListAdapter(data,
                     object : TagListAdapter.TagHolderListener {
-                        override fun onTagCheckChange(tag: String, checked: Boolean) {
+                        override fun onTagCheckChange(tag: TagPres, checked: Boolean) {
                             val videoPres = videoList[MainActivity.currentPosition]
                             if (checked) videoPres.tags.add(tag) else videoPres.tags.remove(tag)
                             viewModel.saveVideoTags(videoPres)
@@ -78,9 +81,11 @@ class ImagePagerFragment : InjectedFragment<List<String>, DetailViewModel>() {
             recycler_detail.visibility = View.VISIBLE
         } else setupForError(getString(R.string.no_tags))
     }
+
     override fun setupForLoading() {
         text_empty_tags.visibility = View.GONE
     }
+
     private fun prepareSharedElementTransition() {
         val transition = TransitionInflater.from(context)
                 .inflateTransition(R.transition.image_shared_element_transition)
@@ -88,7 +93,7 @@ class ImagePagerFragment : InjectedFragment<List<String>, DetailViewModel>() {
         // A similar mapping is set at the GridFragment with a setExitSharedElementCallback.
         setEnterSharedElementCallback(
                 object : SharedElementCallback() {
-                    override fun onMapSharedElements(names: List<String>?, sharedElements: MutableMap<String, View>?) {
+                    override fun onMapSharedElements(names: List<String>, sharedElements: MutableMap<String, View>) {
                         // Locate the image view at the primary fragment (the ImageFragment that is currently
                         // visible). To locate the fragment, call instantiateItem with the selection position.
                         // At this stage, the method will simply return the fragment at the position and will
@@ -98,10 +103,11 @@ class ImagePagerFragment : InjectedFragment<List<String>, DetailViewModel>() {
                         val view = currentFragment.view ?: return
                         // Map the first shared element name to the child ImageView.
                         val sharedView = view.findViewById<View>(R.id.pager_image)
-                        sharedElements!![names!![0]] = sharedView
+                        sharedElements[names[0]] = sharedView
                     }
                 })
     }
+
     companion object {
         private const val VIDEO_LIST_KEY = "video=list-key"
         fun newInstance(videoList: List<VideoPres>): ImagePagerFragment {

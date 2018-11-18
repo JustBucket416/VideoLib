@@ -6,18 +6,18 @@ import android.os.Parcelable
 data class FilterPres(val text: String,
                       val sources: MutableList<Int>,
                       var isAllAnyCheck: Boolean = false,
-                      val tags: MutableList<String>) : Parcelable {
+                      val tags: MutableList<TagPres>) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.createIntArray()?.toMutableList() ?: ArrayList(),
             parcel.readByte() != 0.toByte(),
-            parcel.createStringArrayList())
+            parcel.createTypedArrayList(TagPres.CREATOR))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(text)
         parcel.writeIntArray(sources.toIntArray())
         parcel.writeByte(if (isAllAnyCheck) 1 else 0)
-        parcel.writeStringList(tags)
+        parcel.writeTypedList(tags)
     }
 
     override fun describeContents(): Int {

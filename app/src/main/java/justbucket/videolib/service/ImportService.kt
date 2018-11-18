@@ -6,6 +6,8 @@ import android.widget.Toast
 import dagger.android.DaggerService
 import justbucket.videolib.R
 import justbucket.videolib.domain.feature.video.AddVideo
+import justbucket.videolib.mapper.mapToDomain
+import justbucket.videolib.model.TagPres
 import javax.inject.Inject
 
 class ImportService : DaggerService() {
@@ -17,7 +19,7 @@ class ImportService : DaggerService() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val paths: ArrayList<String> = intent.getStringArrayListExtra(LINKS_KEY)
-        val tags: ArrayList<String> = intent.getStringArrayListExtra(TAGS_KEY)
+        val tags: ArrayList<TagPres> = intent.getParcelableArrayListExtra<TagPres>(TAGS_KEY)
         Toast.makeText(this, getString(R.string.string_adding), Toast.LENGTH_SHORT).show()
         paths.forEach { path ->
             addVideo.execute({ either ->
@@ -30,7 +32,7 @@ class ImportService : DaggerService() {
                     else Toast.makeText(this, getString(R.string.string_import_stored), Toast.LENGTH_SHORT).show()
                     stopSelf()
                 }
-            }, AddVideo.Params.createParams(path, tags))
+            }, AddVideo.Params.createParams(path, tags.map { it.mapToDomain() }))
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -39,10 +41,10 @@ class ImportService : DaggerService() {
         private const val LINKS_KEY = "link-key"
         private const val TAGS_KEY = "tags-key"
 
-        fun newIntent(context: Context, links: List<String>, tags: List<String>): Intent {
+        fun newIntent(context: Context, links: List<String>, tags: ArrayList<TagPres>): Intent {
             return Intent(context, ImportService::class.java).apply {
                 putStringArrayListExtra(LINKS_KEY, ArrayList(links))
-                putStringArrayListExtra(TAGS_KEY, ArrayList(tags))
+                putParcelableArrayListExtra(TAGS_KEY, tags)
             }
         }
     }

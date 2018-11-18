@@ -16,6 +16,7 @@ import android.widget.Toast
 import dagger.android.AndroidInjection
 import justbucket.videolib.adapter.TagListAdapter
 import justbucket.videolib.di.ViewModelFactory
+import justbucket.videolib.model.TagPres
 import justbucket.videolib.state.Resource
 import justbucket.videolib.viewmodel.ImportViewModel
 import kotlinx.android.synthetic.main.activity_import.*
@@ -27,7 +28,7 @@ class ImportActivity : AppCompatActivity() {
     lateinit var viewModelFactory: ViewModelFactory
     private lateinit var importViewModel: ImportViewModel
     private lateinit var adapter: TagListAdapter
-    private val tagList = ArrayList<String>()
+    private val tagList = ArrayList<TagPres>()
     private val linkList = ArrayList<String>()
 
     companion object {
@@ -117,12 +118,12 @@ class ImportActivity : AppCompatActivity() {
         }
     }
 
-    fun showData(resource: Resource<List<String>>) {
+    fun showData(resource: Resource<List<TagPres>>) {
         resource.let {
             val items = it.data
             if (items?.isNotEmpty() == true) {
                 adapter = TagListAdapter(items, object : TagListAdapter.TagHolderListener {
-                    override fun onTagCheckChange(tag: String, checked: Boolean) {
+                    override fun onTagCheckChange(tag: TagPres, checked: Boolean) {
                         if (checked) tagList.add(tag) else tagList.remove(tag)
                     }
                 })

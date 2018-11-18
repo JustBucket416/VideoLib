@@ -2,21 +2,7 @@ package justbucket.videolib.data.mapper
 
 import justbucket.videolib.data.model.FilterEntity
 import justbucket.videolib.domain.model.Filter
-import javax.inject.Inject
 
-class FilterMapper @Inject constructor() : Mapper<Filter, FilterEntity> {
+fun FilterEntity.mapToDomain() = Filter(text, sources, allAnyCheck, tags.map { it.mapToDomain() })
 
-    override suspend fun mapToDomain(data: FilterEntity): Filter {
-        return Filter(data.text,
-                data.sources,
-                data.allAnyCheck,
-                data.tags)
-    }
-
-    override suspend fun mapToData(domain: Filter): FilterEntity {
-        return FilterEntity(domain.text,
-                domain.sources,
-                domain.allAnyCheck,
-                domain.tags)
-    }
-}
+fun Filter.mapToData() = FilterEntity(text, sources, allAnyCheck, tags.map { it.mapToData() })

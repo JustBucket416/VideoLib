@@ -1,5 +1,7 @@
 package justbucket.videolib.domain.repository
 
+import justbucket.videolib.domain.model.Tag
+
 /**
  * A tag repository interface
  */
@@ -17,13 +19,13 @@ interface TagRepository {
      *
      * @param tag - a tag to delete
      */
-    suspend fun deleteTag(tag: String)
+    suspend fun deleteTag(tag: Tag)
 
     /**
      * Loads all tags from the db
      *
      * @return - list that contains all tags
      */
-    suspend fun getAllTags(): List<String>
+    suspend fun getAllTags(): List<Tag>
 
 }

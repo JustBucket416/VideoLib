@@ -8,13 +8,12 @@ import justbucket.videolib.data.SourceRepositoryImpl
 import justbucket.videolib.data.TagRepositoryImpl
 import justbucket.videolib.data.VideoRepositoryImpl
 import justbucket.videolib.data.db.VideoDatabase
-import justbucket.videolib.data.mapper.FilterMapper
-import justbucket.videolib.data.mapper.VideoMapper
 import justbucket.videolib.data.remote.MemoryRepository
+import justbucket.videolib.data.remote.RetrofitHelper
 import justbucket.videolib.data.remote.YoutubeRepository
 import justbucket.videolib.data.remote.memory.MemoryRepositoryImpl
-import justbucket.videolib.data.remote.youtube.RetrofitHelper
 import justbucket.videolib.data.remote.youtube.YoutubeAPI
+import justbucket.videolib.data.remote.youtube.YoutubeConstants
 import justbucket.videolib.data.remote.youtube.YoutubeRepositoryImpl
 import justbucket.videolib.data.sharedpreferences.PreferencesManager
 import justbucket.videolib.domain.repository.PreferenceRepository
@@ -38,20 +37,19 @@ class DataModule {
 
     @Provides
     fun provideYoutubeAPI(retrofitHelper: RetrofitHelper): YoutubeAPI {
-        return retrofitHelper.getYoutubeApi()
+        return retrofitHelper.buildApi(YoutubeConstants.BASE_URL)
     }
 
     @Provides
-    fun provideYOutubeRepository(youtubeAPI: YoutubeAPI,
+    fun provideYoutubeRepository(youtubeAPI: YoutubeAPI,
                                  database: VideoDatabase): YoutubeRepository {
         return YoutubeRepositoryImpl(youtubeAPI, database)
     }
 
     @Provides
-    fun provideVideoRepository(videoDatabase: VideoDatabase, videoMapper: VideoMapper,
-                               filterMapper: FilterMapper, memoryRepository: MemoryRepository,
+    fun provideVideoRepository(videoDatabase: VideoDatabase, memoryRepository: MemoryRepository,
                                youtubeRepository: YoutubeRepository): VideoRepository {
-        return VideoRepositoryImpl(videoDatabase, videoMapper, filterMapper, memoryRepository, youtubeRepository)
+        return VideoRepositoryImpl(videoDatabase, memoryRepository, youtubeRepository)
     }
 
     @Provides
@@ -65,8 +63,7 @@ class DataModule {
     }
 
     @Provides
-    fun providePreferencesRepository(preferencesManager: PreferencesManager,
-                                     filterMapper: FilterMapper): PreferenceRepository {
-        return PreferenceRepositoryImpl(preferencesManager, filterMapper)
+    fun providePreferencesRepository(preferencesManager: PreferencesManager): PreferenceRepository {
+        return PreferenceRepositoryImpl(preferencesManager)
     }
 }

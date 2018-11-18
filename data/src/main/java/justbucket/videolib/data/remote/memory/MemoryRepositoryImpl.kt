@@ -26,14 +26,14 @@ class MemoryRepositoryImpl @Inject constructor(/*private val requestManager: Req
 
     private var check = true
 
-    override suspend fun loadFromMemory(path: String, tags: List<String>): Either<Failure, Boolean> {
+    override suspend fun loadFromMemory(path: String, tags: List<TagEntity>): Either<Failure, Boolean> {
         runBlocking {
             scanDir(File(path), tags)
         }
         return Either.Right(check)
     }
 
-    private suspend fun scanDir(dir: File, tags: List<String>) {
+    private suspend fun scanDir(dir: File, tags: List<TagEntity>) {
         val tagId = tagDao.insertTag(TagEntity(text = dir.name))
         dir.listFiles().forEach { file ->
             GlobalScope.launch(Dispatchers.IO) {
@@ -53,12 +53,12 @@ class MemoryRepositoryImpl @Inject constructor(/*private val requestManager: Req
                                 videoPath = file.absolutePath, thumbPath = file.absolutePath))
                         linkDao.insertLink(LinkEntity(id, tagId))
                         tags.forEach {
-                            linkDao.insertLink(LinkEntity(id, tagDao.getTagId(it)))
+                            linkDao.insertLink(LinkEntity(id, it.id!!))
                         }
                     } else {
                         check = false
                         tags.forEach {
-                            linkDao.insertLink(LinkEntity(entity.id!!, tagDao.getTagId(it)))
+                            linkDao.insertLink(LinkEntity(entity.id!!, it.id!!))
                         }
                     }
 
