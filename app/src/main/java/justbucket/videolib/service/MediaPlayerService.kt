@@ -7,7 +7,6 @@ import android.media.MediaPlayer
 import android.os.IBinder
 import android.os.Parcel
 import android.os.Parcelable
-import android.support.v4.app.NotificationCompat
 import android.view.KeyEvent
 import com.bumptech.glide.RequestManager
 import dagger.android.DaggerService
@@ -58,12 +57,6 @@ class MediaPlayerService : DaggerService() {
         mp.stop()
         mp.release()
         return super.onUnbind(intent)
-    }
-
-    private fun showNotification() {
-        val builder = NotificationCompat.Builder(this, MEDIA_CHANNEL_NAME)
-        builder.addAction(android.R.drawable.ic_media_previous, "previous",
-                buildMediaButtonIntent(KeyEvent.KEYCODE_MEDIA_PREVIOUS))
     }
 
     private fun buildMediaButtonIntent(keycode: Int): PendingIntent {

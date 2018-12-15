@@ -15,10 +15,10 @@ class SearchByImage @Inject constructor(coroutineContext: CoroutineContext,
         return categoryRepository.getTags(params.base64)
     }
 
-    data class Params internal constructor(val base64: String) {
+    data class Params internal constructor(val base64: ByteArray) {
         companion object {
             @JvmStatic
-            fun createParams(base64: String) = Params(base64)
+            fun createParams(base64: ByteArray) = Params(base64)
         }
     }
 }

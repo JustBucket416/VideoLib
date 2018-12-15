@@ -7,7 +7,7 @@ import justbucket.videolib.domain.functional.Either
 import javax.inject.Inject
 
 class ImageRepositoryImpl @Inject constructor(private val ddapi: DDApi): ImageRepository {
-    override suspend fun getTags(stringBase64: String): Either<Failure, ArrayList<String>> {
+    override suspend fun getTags(stringBase64: ByteArray): Either<Failure, ArrayList<String>> {
         val ddRoot = DDRoot(
                 data = arrayListOf(stringBase64),
                 parameters = DDRoot.Parameters(
