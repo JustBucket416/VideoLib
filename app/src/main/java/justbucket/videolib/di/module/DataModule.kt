@@ -3,23 +3,21 @@ package justbucket.videolib.di.module
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import justbucket.videolib.data.PreferenceRepositoryImpl
-import justbucket.videolib.data.SourceRepositoryImpl
-import justbucket.videolib.data.TagRepositoryImpl
-import justbucket.videolib.data.VideoRepositoryImpl
+import justbucket.videolib.data.*
 import justbucket.videolib.data.db.VideoDatabase
+import justbucket.videolib.data.remote.ImageRepository
 import justbucket.videolib.data.remote.MemoryRepository
 import justbucket.videolib.data.remote.RetrofitHelper
 import justbucket.videolib.data.remote.YoutubeRepository
+import justbucket.videolib.data.remote.deep_detect.DDApi
+import justbucket.videolib.data.remote.deep_detect.DDConstants
+import justbucket.videolib.data.remote.deep_detect.ImageRepositoryImpl
 import justbucket.videolib.data.remote.memory.MemoryRepositoryImpl
 import justbucket.videolib.data.remote.youtube.YoutubeAPI
 import justbucket.videolib.data.remote.youtube.YoutubeConstants
 import justbucket.videolib.data.remote.youtube.YoutubeRepositoryImpl
 import justbucket.videolib.data.sharedpreferences.PreferencesManager
-import justbucket.videolib.domain.repository.PreferenceRepository
-import justbucket.videolib.domain.repository.SourceRepository
-import justbucket.videolib.domain.repository.TagRepository
-import justbucket.videolib.domain.repository.VideoRepository
+import justbucket.videolib.domain.repository.*
 
 @Module
 class DataModule {
@@ -41,9 +39,19 @@ class DataModule {
     }
 
     @Provides
+    fun provideDDApi(retrofitHelper: RetrofitHelper): DDApi {
+        return retrofitHelper.buildApi(DDConstants.CLASSIFICATION_ENDPOINT)
+    }
+
+    @Provides
     fun provideYoutubeRepository(youtubeAPI: YoutubeAPI,
                                  database: VideoDatabase): YoutubeRepository {
         return YoutubeRepositoryImpl(youtubeAPI, database)
+    }
+
+    @Provides
+    fun provideImageRepository(ddApi: DDApi): ImageRepository {
+        return ImageRepositoryImpl(ddApi)
     }
 
     @Provides
@@ -60,6 +68,11 @@ class DataModule {
     @Provides
     fun provideSourceRepository(videoDatabase: VideoDatabase): SourceRepository {
         return SourceRepositoryImpl(videoDatabase)
+    }
+
+    @Provides
+    fun provideCategoryrepository(imageRepository: ImageRepository): CategoryRepository {
+        return CategoryRepositoryImpl(imageRepository)
     }
 
     @Provides
