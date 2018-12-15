@@ -68,4 +68,6 @@ dependencies {
     //Lifecycle
     implementation appDependencies.lifecycle
     kapt appDependencies.lifecycleCompiler
+
+    implementation appTestDependencies.androidRunner
 }

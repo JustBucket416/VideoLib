@@ -212,7 +212,7 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
      * @param data - loaded videos
      */
     override fun setupForSuccess(data: List<VideoPres>?) {
-        if (!this::unit.isInitialized) return
+        if (!this::unit.isInitialized || grid_recycler == null) return
         if (data?.isNotEmpty() == true) {
             grid_recycler.visibility = View.VISIBLE
             grid_text_error.visibility = View.GONE

@@ -41,8 +41,10 @@ class SourceImageAdapter(private val items: List<Int>,
 
         fun onBind(source: Int, checked: Boolean, sourceClickListener: SourceClickListener) {
 
+            val imageResource = if (source == 0) R.drawable.ic_storage else R.drawable.ic_youtube
+
             Glide.with(itemView.context)
-                    .load(source)
+                    .load(imageResource)
                     .into(image)
 
             itemView.foreground = selectorCheckDrawable

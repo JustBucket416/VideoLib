@@ -1,2 +1,3 @@
 /build
-/src/main/java/justbucket/videolib/data/remote/youtube/YoutubeConstants.kt
+/src/main/java/justbucket/videolib/data/remote/kharnin/*
+/src/main/java/justbucket/videolib/data/remote/KharninRepository.kt

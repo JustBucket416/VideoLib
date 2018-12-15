@@ -250,13 +250,13 @@ class VideoActivity : AppCompatActivity() {
         title = video.title
 
         when (video.source) {
-            R.drawable.ic_storage -> {
+            0 -> {
                 fullscreen_video.setVideoPath(video.videoPath)
                 fullscreen_video.setVolume(0)
                 fullscreen_video.start()
                 mediaInterface?.playAudio(video.videoPath)
             }
-            R.drawable.ic_youtube -> {
+            1 -> {
                 var orientation = requestedOrientation
                 val rotation = (getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.rotation
                 when (rotation) {
