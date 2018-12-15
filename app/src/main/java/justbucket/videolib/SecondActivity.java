@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import justbucket.videolib.di.ViewModelFactory;
+import justbucket.videolib.fragment.GridFragment;
 import justbucket.videolib.viewmodel.SecondViewModel;
 
 public class SecondActivity extends AppCompatActivity {
@@ -64,7 +65,8 @@ public class SecondActivity extends AppCompatActivity {
             super(fm);
             titles = tags;
             for (String tag : tags) {
-                mFragments.add(VideoListFragment.newInstance(tag));
+                GridFragment fragment = new GridFragment();
+                mFragments.add(fragment);
             }
         }
 
