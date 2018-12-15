@@ -13,11 +13,15 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import justbucket.videolib.fragment.GridFragment;
+import justbucket.videolib.model.FilterPres;
+
 public class SecondActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private TabsAdapter mAdapter;
+    private static final String FILTER_DIALOG_TAG = "filter";
 
     static SecondActivity newInstance() {
         SecondActivity activity = new SecondActivity();
@@ -46,7 +50,8 @@ public class SecondActivity extends AppCompatActivity {
         public TabsAdapter(FragmentManager fm, List<String> tags) {
             super(fm);
             for (String tag: tags) {
-                mFragments.add(VideoListFragment.newInstance(tag));
+                GridFragment fragment = new GridFragment();
+                mFragments.add(fragment);
             }
         }
 

@@ -99,7 +99,7 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
     private var shouldScroll = true
 
     override val layoutId: Int
-        get() = R.layout.fragment_grid
+        get() = R.layout.fragment_for_videos
 
     override val viewModel: GridViewModel
         get() = ViewModelProviders.of(this, viewModelFactory)[GridViewModel::class.java]
