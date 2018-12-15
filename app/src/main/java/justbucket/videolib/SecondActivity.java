@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SecondActivity extends AppCompatActivity {
@@ -32,7 +33,7 @@ public class SecondActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.view_pager);
         mViewPager.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
         List<String> tags = new ArrayList<>();
-        tags.add("One"); tags.add("Two"); tags.add("Three");
+        tags.add("one"); tags.add("two"); tags.add("three");
         mAdapter = new TabsAdapter(getSupportFragmentManager(), tags);
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(mAdapter.getCount());
@@ -41,13 +42,21 @@ public class SecondActivity extends AppCompatActivity {
 
     private class TabsAdapter extends FragmentStatePagerAdapter {
 
+        private List<String> titles;
         private List<Fragment> mFragments = new ArrayList<>();
 
         public TabsAdapter(FragmentManager fm, List<String> tags) {
             super(fm);
+            titles = tags;
             for (String tag: tags) {
                 mFragments.add(VideoListFragment.newInstance(tag));
             }
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles.get(position);
         }
 
         @Override
@@ -59,6 +68,7 @@ public class SecondActivity extends AppCompatActivity {
         public int getCount() {
             return mFragments.size();
         }
+
     }
 
 }

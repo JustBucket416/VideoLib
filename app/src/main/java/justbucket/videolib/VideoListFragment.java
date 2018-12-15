@@ -17,13 +17,18 @@ public class VideoListFragment extends Fragment {
         return fragment;
     }
 
-    public void setKeyTag(String mKeyTag) {
-        this.mKeyTag = mKeyTag;
+    public void setKeyTag(String keyTag) {
+        this.mKeyTag = keyTag;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_grid, container, false);
+        return inflater.inflate(R.layout.fragment_for_videos, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 }
