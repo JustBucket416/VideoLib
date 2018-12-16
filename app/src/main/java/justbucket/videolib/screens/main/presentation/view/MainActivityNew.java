@@ -98,7 +98,7 @@ public class MainActivityNew extends AppCompatActivity {
                 }, new Function1<ArrayList<String>, Object>() {
                     @Override
                     public Object invoke(ArrayList<String> strings) {
-//                        startSecondActivity(strings);
+                        startSecondActivity(strings);
                         return null;
                     }
                 });
