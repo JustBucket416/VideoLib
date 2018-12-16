@@ -1,8 +1,10 @@
 package justbucket.videolib.screens.main.presentation.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -25,6 +27,8 @@ import justbucket.videolib.domain.feature.ddsearch.SearchByImage;
 import justbucket.videolib.domain.functional.Either;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
 public class MainActivityNew extends AppCompatActivity {
@@ -63,7 +67,11 @@ public class MainActivityNew extends AppCompatActivity {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream .toByteArray();
-            String s = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+            RequestBody pictureFormatted = RequestBody.create(MediaType.parse("image/*"), byteArray);
+            MultipartBody.Part.createFormData("confidentialPicture", "confidentialPicture.jpg", pictureFormatted);
+            requestTags(pictureFormatted);
+            System.out.println();
         }else{
 
         }
@@ -90,12 +98,12 @@ public class MainActivityNew extends AppCompatActivity {
                 }, new Function1<ArrayList<String>, Object>() {
                     @Override
                     public Object invoke(ArrayList<String> strings) {
-                        startSecondActivity(strings);
+//                        startSecondActivity(strings);
                         return null;
                     }
                 });
                 return Unit.INSTANCE;
             }
-        });
+        }, SearchByImage.Params.createParams(requestBody));
     }
 }

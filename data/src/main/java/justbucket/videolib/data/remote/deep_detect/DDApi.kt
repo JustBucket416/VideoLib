@@ -8,7 +8,7 @@ import retrofit2.http.*
 interface DDApi {
 
     @Multipart
-    @POST
-    fun uploadFileImage(@Part("file\"; filename=\"img.png\" ") file: RequestBody): Call<CategoriesRoot>
+    @POST("products/suggest_products")
+    fun uploadFileImage(@Part("file\"; filename=\"img.png\" ") file: RequestBody): Call<List<CategoriesRoot>>
 
 }
