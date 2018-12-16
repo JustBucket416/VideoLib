@@ -8,6 +8,7 @@ import justbucket.videolib.data.remote.YoutubeRepository
 import justbucket.videolib.data.remote.youtube.model.playlist.Item
 import justbucket.videolib.domain.exception.Failure
 import justbucket.videolib.domain.functional.Either
+import justbucket.videolib.domain.model.Video
 import justbucket.videolib.domain.utils.getOrDie
 import javax.inject.Inject
 
@@ -61,6 +62,21 @@ class YoutubeRepositoryImpl @Inject constructor(
             }
 
         } else return Either.Left(Failure.NetworkFailure)
+    }
+
+    override suspend fun loadTempVideos(text: String): Either<Failure, List<Video>> {
+        val response = youtubeAPI.getTempVideos(query = text).execute()
+        return if (response.isSuccessful) {
+            Either.Right(response.body()?.items?.map { Video(-1,
+                    it.snippet.title,
+                    "https://www.youtube.com/watch?v=${it.id.getOrDie("videoId")}",
+                    it.snippet.thumbnails.maxres?.url
+                            ?: it.snippet.thumbnails.standard?.url
+                            ?: it.snippet.thumbnails.medium?.url
+                            ?: it.snippet.thumbnails.default?.url.getOrDie("image"),
+                    1,
+                    emptyList()) }!!)
+        } else Either.Left(Failure.NetworkFailure)
     }
 
     private tailrec fun parseItems(token: String?, link: String, tags: List<TagEntity>, items: List<Item>, check: Boolean): Boolean {

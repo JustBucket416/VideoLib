@@ -20,6 +20,7 @@ ext {
     lifecycleVersion = '1.1.1'
     daggerVersion = '2.19'
     kodeinVersion = '5.2.0'
+    okHttpVersion = '3.12.0'
 
     //Testing
     jUnitVersion = '4.12'
@@ -37,6 +38,7 @@ ext {
     domainDependencies = [
             kotlin     : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${ext.kotlin_version}",
             coroutines : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion",
+            okhttp     : "com.squareup.okhttp3:okhttp:$okHttpVersion",
             javaxInject: "javax.inject:javax.inject:${javaxInjectVersion}"
     ]
 
@@ -56,7 +58,7 @@ ext {
             gson             : "com.google.code.gson:gson:$gsonVersion",
             glide            : "com.github.bumptech.glide:glide:$glideVersion",
             glideAP          : "com.github.bumptech.glide:compiler:$glideVersion",
-            javaxInject      : "javax.inject:javax.inject:${javaxInjectVersion}",
+            javaxInject      : "javax.inject:javax.inject:${javaxInjectVersion}"
     ]
 
     dataTestDependencies = [

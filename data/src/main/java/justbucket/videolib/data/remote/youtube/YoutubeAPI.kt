@@ -3,6 +3,7 @@ package justbucket.videolib.data.remote.youtube
 import justbucket.videolib.data.remote.youtube.YoutubeConstants.MAX_RESULTS
 import justbucket.videolib.data.remote.youtube.YoutubeConstants.PART
 import justbucket.videolib.data.remote.youtube.YoutubeConstants.PLAYLIST_URL
+import justbucket.videolib.data.remote.youtube.YoutubeConstants.SEARCH_URL
 import justbucket.videolib.data.remote.youtube.YoutubeConstants.TOKEN
 import justbucket.videolib.data.remote.youtube.YoutubeConstants.VIDEO_URL
 import justbucket.videolib.data.remote.youtube.model.playlist.PlaylistRoot
@@ -58,7 +59,10 @@ interface YoutubeAPI {
                  @Query("id") id: String,
                  @Query("key") apiKey: String = TOKEN): Call<VideoRoot>
 
-
-
-
+    @GET
+    fun getTempVideos(@Url url: String = SEARCH_URL,
+                      @Query("part") part: String = PART,
+                      @Query("maxResults") maxResults: Int = MAX_RESULTS,
+                      @Query("Q") query: String,
+                      @Query("key") apiKey: String = TOKEN): Call<VideoRoot>
 }

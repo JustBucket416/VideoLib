@@ -10,6 +10,7 @@ import justbucket.videolib.domain.feature.tag.AddTag
 import justbucket.videolib.domain.feature.tag.DeleteTag
 import justbucket.videolib.domain.feature.tag.GetAllTags
 import justbucket.videolib.domain.feature.video.DeleteVideo
+import justbucket.videolib.domain.feature.video.GetTempVideos
 import justbucket.videolib.domain.feature.video.GetVideos
 import justbucket.videolib.domain.feature.video.SubscribeToVideos
 import justbucket.videolib.domain.model.SwitchValues
@@ -25,6 +26,7 @@ import javax.inject.Inject
 class GridViewModel @Inject constructor(
         private val subscribeToVideos: SubscribeToVideos,
         private val getVideos: GetVideos,
+        private val getTempVideos: GetTempVideos,
         private val getAllTags: GetAllTags,
         private val deleteVideo: DeleteVideo,
         private val addTag: AddTag,
@@ -43,7 +45,9 @@ class GridViewModel @Inject constructor(
 
     override fun onCleared() {
         saveDetailsSwitchState()
-        saveFilter.execute(params = SaveFilter.Params.createParams(lastFilter.mapToDomain()))
+        if (!lastFilter.tags.any { it.id == -1L }) {
+            saveFilter.execute(params = SaveFilter.Params.createParams(lastFilter.mapToDomain()))
+        }
     }
 
     fun loadFilter() {
@@ -51,6 +55,18 @@ class GridViewModel @Inject constructor(
             lastFilter = it.mapToPresentation()
             fetchVideos()
         })
+    }
+
+    fun setTextTag(tag: String) {
+        liveData.postValue(Resource.loading())
+        getTempVideos.execute(onResult = { either ->
+            either.either({
+                liveData.postValue(Resource.error("Failed to load data"))
+            },
+                    { list ->
+                        liveData.postValue(Resource.success(list.map { it.mapToPresentation() }))
+                    })
+        }, params = GetTempVideos.Params.createParams(tag))
     }
 
     fun saveFilter(filter: FilterPres) {

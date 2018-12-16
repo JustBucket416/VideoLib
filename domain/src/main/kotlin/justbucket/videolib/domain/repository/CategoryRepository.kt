@@ -5,5 +5,5 @@ import justbucket.videolib.domain.functional.Either
 
 interface CategoryRepository {
 
-    suspend fun getTags(base64Image: String): Either<Failure, ArrayList<String>>
+    suspend fun getTags(base64Image: ByteArray): Either<Failure, ArrayList<String>>
 }

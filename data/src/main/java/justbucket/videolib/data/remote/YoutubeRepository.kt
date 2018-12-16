@@ -3,6 +3,7 @@ package justbucket.videolib.data.remote
 import justbucket.videolib.data.model.TagEntity
 import justbucket.videolib.domain.exception.Failure
 import justbucket.videolib.domain.functional.Either
+import justbucket.videolib.domain.model.Video
 
 /**
  * A repository interface which loads videos from YouTube
@@ -27,4 +28,6 @@ interface YoutubeRepository {
      * @return a video entity
      */
     suspend fun loadVideo(link: String, tags: List<TagEntity>): Either<Failure, Boolean>
+
+    suspend fun loadTempVideos(text: String): Either<Failure, List<Video>>
 }

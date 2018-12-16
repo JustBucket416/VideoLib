@@ -46,6 +46,14 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
         private const val LANDSCAPE_ROW_NUM = 4
         private const val PORTRAIT_COLUMN_NUM = 2
         private const val PORTRAIT_ROW_NUM = 6
+        private const val TAG_KEY = "tag-key"
+
+        @JvmStatic
+        fun newInstance(tag: String) = GridFragment().apply {
+            arguments = Bundle().apply {
+                putString(TAG_KEY, tag)
+            }
+        }
     }
 
     private val fabMenuListener = object : OneMoreFabMenu.OptionsClick {
@@ -99,7 +107,7 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
     private var shouldScroll = true
 
     override val layoutId: Int
-        get() = R.layout.fragment_grid
+        get() = R.layout.fragment_for_videos
 
     override val viewModel: GridViewModel
         get() = ViewModelProviders.of(this, viewModelFactory)[GridViewModel::class.java]
@@ -145,7 +153,9 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                             }
                         } else {
                             shouldScroll = true
-                            viewModel.loadFilter()
+                            if (arguments?.getString(TAG_KEY) != null) {
+                                viewModel.setTextTag(arguments?.getString(TAG_KEY)!!)
+                            } else viewModel.loadFilter()
                         }
                     }
                 })

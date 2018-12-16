@@ -93,6 +93,10 @@ class VideoRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun loadVideosByTempTag(text: String): Either<Failure, List<Video>> {
+        return youtubeRepository.loadTempVideos(text)
+    }
+
     private fun checkVideo(filter: FilterEntity, video: Video): Boolean {
         val (text, sources, allany, tags) = filter.mapToDomain()
         if (text.isNotEmpty()) {

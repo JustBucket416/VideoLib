@@ -19,7 +19,8 @@
         app:fastScrollHorizontalTrackDrawable="@drawable/line_drawable"
         app:fastScrollVerticalThumbDrawable="@drawable/thumb_drawable"
         app:fastScrollVerticalTrackDrawable="@drawable/line_drawable"
-        tools:listitem="@layout/recycler_video_card" />
+        tools:listitem="@layout/recycler_video_card"
+        android:background="@color/black_overlay"/>
 
     <TextView
         android:id="@+id/grid_text_error"
@@ -27,5 +28,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textAlignment="center" />
+
+    <com.dekoservidoni.omfm.OneMoreFabMenu
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:visibility="visible"
+        app:close_on_click="true"
+        app:color_main_button="@color/colorPrimaryDark"
+        app:color_secondary_buttons="@color/colorPrimary"
+        app:content_options="@menu/menu_fab"
+        app:label_text_color="@color/colorPrimary"
+        app:size_main_button="@integer/omfm_fab_size_normal"
+        app:size_secondary_buttons="@integer/omfm_fab_size_mini"/>
 
 </FrameLayout>
