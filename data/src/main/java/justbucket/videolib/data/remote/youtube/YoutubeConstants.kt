@@ -5,6 +5,7 @@ object YoutubeConstants {
     internal const val TOKEN = "AIzaSyBeVTgFWq2_muEXj07OdPKtOrP699gXKEs"
     internal const val PLAYLIST_URL = "playlistItems"
     internal const val VIDEO_URL = "videos"
+    internal const val SEARCH_URL = "search"
     internal const val PART = "snippet"
     internal const val MAX_RESULTS = 50
 }

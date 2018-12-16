@@ -46,4 +46,10 @@
         <item name="background">@color/black_overlay</item>
         <item name="colorPrimary">@android:color/transparent</item>
     </style>
+
+    <style name="SeekBarStyle">
+        <item name="android:colorControlActivated">@color/colorPrimaryDark</item>
+        <item name="android:colorControlNormal">@color/colorAccent</item>
+    </style>
+
 </resources>

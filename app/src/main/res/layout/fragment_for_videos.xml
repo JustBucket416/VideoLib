@@ -34,13 +34,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        android:visibility="visible"
         app:close_on_click="true"
         app:color_main_button="@color/colorPrimaryDark"
         app:color_secondary_buttons="@color/colorPrimary"
         app:content_options="@menu/menu_fab"
         app:label_text_color="@color/colorPrimary"
         app:size_main_button="@integer/omfm_fab_size_normal"
-        app:size_secondary_buttons="@integer/omfm_fab_size_mini"
-        android:visibility="gone"/>
+        app:size_secondary_buttons="@integer/omfm_fab_size_mini"/>
 
 </FrameLayout>

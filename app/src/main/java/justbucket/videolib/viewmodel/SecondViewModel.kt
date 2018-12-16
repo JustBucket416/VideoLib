@@ -2,12 +2,15 @@ package justbucket.videolib.viewmodel
 
 import android.graphics.Bitmap
 import justbucket.videolib.domain.feature.ddsearch.SearchByImage
+import justbucket.videolib.domain.feature.preferences.SaveFilter
+import justbucket.videolib.mapper.mapToDomain
 import justbucket.videolib.model.FilterPres
 import justbucket.videolib.state.Resource
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 
-class SecondViewModel @Inject constructor(private val searchByImage: SearchByImage)
+class SecondViewModel @Inject constructor(private val searchByImage: SearchByImage,
+                                          private val saveFilter: SaveFilter)
     : BaseViewModel<ArrayList<String>>() {
 
     fun loadtags(bitmap: Bitmap) {
@@ -30,6 +33,6 @@ class SecondViewModel @Inject constructor(private val searchByImage: SearchByIma
     }
 
     fun saveFilterPres(filterPres: FilterPres) {
-
+        saveFilter.execute(params = SaveFilter.Params.createParams(filterPres.mapToDomain()))
     }
 }
