@@ -7,6 +7,7 @@ import justbucket.videolib.data.remote.youtube.YoutubeConstants.SEARCH_URL
 import justbucket.videolib.data.remote.youtube.YoutubeConstants.TOKEN
 import justbucket.videolib.data.remote.youtube.YoutubeConstants.VIDEO_URL
 import justbucket.videolib.data.remote.youtube.model.playlist.PlaylistRoot
+import justbucket.videolib.data.remote.youtube.model.temp.TempRoot
 import justbucket.videolib.data.remote.youtube.model.video.VideoRoot
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -64,5 +65,5 @@ interface YoutubeAPI {
                       @Query("part") part: String = PART,
                       @Query("maxResults") maxResults: Int = MAX_RESULTS,
                       @Query("Q") query: String,
-                      @Query("key") apiKey: String = TOKEN): Call<VideoRoot>
+                      @Query("key") apiKey: String = TOKEN): Call<TempRoot>
 }

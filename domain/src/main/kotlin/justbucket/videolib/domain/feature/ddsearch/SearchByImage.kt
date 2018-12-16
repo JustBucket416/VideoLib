@@ -4,6 +4,7 @@ import justbucket.videolib.domain.exception.Failure
 import justbucket.videolib.domain.functional.Either
 import justbucket.videolib.domain.repository.CategoryRepository
 import justbucket.videolib.domain.usecase.UseCase
+import okhttp3.RequestBody
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -15,10 +16,10 @@ class SearchByImage @Inject constructor(coroutineContext: CoroutineContext,
         return categoryRepository.getTags(params.base64)
     }
 
-    data class Params internal constructor(val base64: ByteArray) {
+    data class Params internal constructor(val base64: RequestBody) {
         companion object {
             @JvmStatic
-            fun createParams(base64: ByteArray) = Params(base64)
+            fun createParams(base64: RequestBody) = Params(base64)
         }
     }
 }

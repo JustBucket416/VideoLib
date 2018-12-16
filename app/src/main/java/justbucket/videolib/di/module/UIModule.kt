@@ -3,7 +3,6 @@ package justbucket.videolib.di.module
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 import justbucket.videolib.ImportActivity
-import justbucket.videolib.SecondActivity
 import justbucket.videolib.VideoActivity
 import justbucket.videolib.fragment.FilterFragment
 import justbucket.videolib.fragment.GridFragment
@@ -32,9 +31,6 @@ abstract class UIModule {
 
     @ContributesAndroidInjector
     abstract fun contributeVideoActivity(): VideoActivity
-
-    @ContributesAndroidInjector
-    abstract fun contributeSecondInjector(): SecondActivity
 
     @ContributesAndroidInjector
     abstract fun contributeImportService(): ImportService

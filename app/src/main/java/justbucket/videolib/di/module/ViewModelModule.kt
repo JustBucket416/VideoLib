@@ -38,10 +38,5 @@ abstract class ViewModelModule {
     abstract fun bindActionViewModel(viewModel: ActionViewModel): ViewModel
 
     @Binds
-    @IntoMap
-    @ViewModelKey(SecondViewModel::class)
-    abstract fun bindSecondViewModel(viewModel: SecondViewModel): ViewModel
-
-    @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 }

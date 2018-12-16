@@ -1,9 +1,5 @@
 package justbucket.videolib;
 
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,27 +10,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import dagger.android.AndroidInjection;
-import justbucket.videolib.di.ViewModelFactory;
 import justbucket.videolib.fragment.GridFragment;
-import justbucket.videolib.state.Resource;
-import justbucket.videolib.viewmodel.SecondViewModel;
 
 public class SecondActivity extends AppCompatActivity {
 
-    @Inject
-    ViewModelFactory mViewModelFactory;
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private TabsAdapter mAdapter;
-    private SecondViewModel mSecondViewModel;
 
     public static final Intent newIntent(Context context) {
         return new Intent(context, SecondActivity.class);
@@ -44,14 +30,6 @@ public class SecondActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
-        AndroidInjection.inject(this);
-        mSecondViewModel = ViewModelProviders.of(this, mViewModelFactory).get(SecondViewModel.class);
-        mSecondViewModel.getData().observe(this, new Observer<Resource<ArrayList<String>>>() {
-            @Override
-            public void onChanged(@Nullable Resource<ArrayList<String>> arrayListResource) {
-
-            }
-        });
         mTabLayout = findViewById(R.id.tab_layout);
         mViewPager = findViewById(R.id.view_pager);
         List<String> tags = new ArrayList<>();

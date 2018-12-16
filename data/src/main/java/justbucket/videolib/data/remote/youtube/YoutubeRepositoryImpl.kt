@@ -70,10 +70,7 @@ class YoutubeRepositoryImpl @Inject constructor(
             Either.Right(response.body()?.items?.map { Video(-1,
                     it.snippet.title,
                     "https://www.youtube.com/watch?v=${it.id.getOrDie("videoId")}",
-                    it.snippet.thumbnails.maxres?.url
-                            ?: it.snippet.thumbnails.standard?.url
-                            ?: it.snippet.thumbnails.medium?.url
-                            ?: it.snippet.thumbnails.default?.url.getOrDie("image"),
+                    it.snippet.thumbnails.medium.url,
                     1,
                     emptyList()) }!!)
         } else Either.Left(Failure.NetworkFailure)

@@ -1,13 +1,12 @@
 package justbucket.videolib.screens;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import justbucket.videolib.screens.main.presentation.view.MainActivityNew;
 import justbucket.videolib.R;
+import justbucket.videolib.screens.main.presentation.view.MainActivityNew;
 
 public class SplashScreen extends AppCompatActivity {
 
