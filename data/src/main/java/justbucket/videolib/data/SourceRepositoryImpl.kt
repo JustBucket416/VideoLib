@@ -9,6 +9,6 @@ class SourceRepositoryImpl @Inject constructor(videoDatabase: VideoDatabase) : S
     private val sourceDao = videoDatabase.sourceDao()
 
     override suspend fun getAllSources(): List<Int> {
-        return sourceDao.getAllSources().map { it.source }
+        return sourceDao.getAllSources().map { it.id?.toInt()!! }
     }
 }

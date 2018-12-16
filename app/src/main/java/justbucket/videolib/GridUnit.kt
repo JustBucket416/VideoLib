@@ -91,7 +91,9 @@ class GridUnit(private val gridFragment: GridFragment,
     }
 
     override fun onItemLongClicked() {
-        gridFragment.startActionMode()
+        if (!gridFragment.isInSearchMode) {
+            gridFragment.startActionMode()
+        }
     }
 
     fun dispatchUpdate(newItems: List<VideoPres>) {
@@ -120,6 +122,16 @@ class GridUnit(private val gridFragment: GridFragment,
                 (gridRecyclerView.findViewHolderForAdapterPosition(index) as VideoGridAdapter.VideoHolder).setChecked(video.selected)
             }
         }
+    }
+
+    fun resetItems() {
+        updateAllItemsChecked(false)
+    }
+
+    fun getSelectedVideos(): List<VideoPres> {
+        val items = items.filter { it.selected }
+        updateAllItemsChecked(false)
+        return items
     }
 
     inner class OnActionEventListenerImpl : ActionModeHelper.OnActionEventListener {

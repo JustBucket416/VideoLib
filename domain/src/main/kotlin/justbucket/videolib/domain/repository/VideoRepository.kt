@@ -56,4 +56,6 @@ interface VideoRepository {
 
     suspend fun loadVideosByTempTag(text: String): Either<Failure, List<Video>>
 
+    suspend fun saveVideo(video: Video)
+
 }

@@ -17,4 +17,8 @@
         android:id="@+id/menu_remove_tag"
         android:icon="@drawable/tag_remove"
         android:title="@string/remove_tags" />
+    <item
+        android:id="@+id/menu_search_by_photo"
+        android:icon="@drawable/ic_camera_24dp"
+        android:title="@string/search_by_photos" />
 </menu>

@@ -25,6 +25,7 @@
     <string name="add_tags">Add tags</string>
     <string name="remove_tags">Remove tags</string>
     <string name="import_video">Import video</string>
+    <string name="search_by_photos">Search by photo</string>
     <string name="separate_tags">Separate tags by \';\'</string>
     <string name="cancel">Cancel</string>
     <string name="remove">Remove</string>

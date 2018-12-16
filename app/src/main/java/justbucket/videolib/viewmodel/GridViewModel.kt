@@ -9,10 +9,7 @@ import justbucket.videolib.domain.feature.preferences.SaveFilter
 import justbucket.videolib.domain.feature.tag.AddTag
 import justbucket.videolib.domain.feature.tag.DeleteTag
 import justbucket.videolib.domain.feature.tag.GetAllTags
-import justbucket.videolib.domain.feature.video.DeleteVideo
-import justbucket.videolib.domain.feature.video.GetTempVideos
-import justbucket.videolib.domain.feature.video.GetVideos
-import justbucket.videolib.domain.feature.video.SubscribeToVideos
+import justbucket.videolib.domain.feature.video.*
 import justbucket.videolib.domain.model.SwitchValues
 import justbucket.videolib.domain.model.Video
 import justbucket.videolib.mapper.mapToDomain
@@ -27,6 +24,7 @@ class GridViewModel @Inject constructor(
         private val subscribeToVideos: SubscribeToVideos,
         private val getVideos: GetVideos,
         private val getTempVideos: GetTempVideos,
+        private val saveVideo: SaveVideo,
         private val getAllTags: GetAllTags,
         private val deleteVideo: DeleteVideo,
         private val addTag: AddTag,
@@ -180,5 +178,11 @@ class GridViewModel @Inject constructor(
     }
 
     fun getFilter() = lastFilter
+
+    fun saveVideos(selectedVideos: List<VideoPres>) {
+        selectedVideos.forEach {
+            saveVideo.execute(params = SaveVideo.Params.createParams(it.mapToDomain()))
+        }
+    }
 
 }

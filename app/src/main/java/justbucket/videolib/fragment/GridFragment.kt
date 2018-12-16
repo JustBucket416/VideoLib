@@ -27,6 +27,7 @@ import justbucket.videolib.extension.myDialog
 import justbucket.videolib.model.FilterPres
 import justbucket.videolib.model.TagPres
 import justbucket.videolib.model.VideoPres
+import justbucket.videolib.screens.main.presentation.view.MainActivityNew
 import justbucket.videolib.viewmodel.GridViewModel
 import kotlinx.android.synthetic.main.fragment_grid.*
 import kotlinx.android.synthetic.main.recycler_video_card.view.*
@@ -99,12 +100,17 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                             .setView(box)
                             .show()
                 }
+                R.id.menu_search_by_photo -> {
+                    MainActivityNew.start(activity)
+                }
             }
         }
     }
     private lateinit var unit: GridUnit
     private var actionModeHelper: ActionModeHelper? = null
     private var shouldScroll = true
+    var isInSearchMode = false
+        private set
 
     override val layoutId: Int
         get() = R.layout.fragment_grid
@@ -118,7 +124,6 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setHasOptionsMenu(true)
         postponeEnterTransition()
         prepareTransitions()
 
@@ -151,16 +156,23 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                             if (savedInstanceState.getBoolean(ACTION_STATE_KEY)) {
                                 actionModeHelper?.startActionMode()
                             }
+                            isInSearchMode = savedInstanceState.getBoolean("isInSearchMode")
                         } else {
                             shouldScroll = true
                             if (arguments?.getString(TAG_KEY) != null) {
+                                isInSearchMode = true
                                 viewModel.setTextTag(arguments?.getString(TAG_KEY)!!)
                             } else viewModel.loadFilter()
                         }
+                        setHasOptionsMenu(!isInSearchMode)
+
+                        if (!isInSearchMode) {
+                            fab.setOptionsClick(fabMenuListener)
+                        } else {
+                            fab.visibility = View.GONE
+                        }
                     }
                 })
-
-        fab.setOptionsClick(fabMenuListener)
 
         grid_recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(grid_recycler: RecyclerView, dx: Int, dy: Int) {
@@ -177,10 +189,21 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                 (grid_recycler.layoutManager as RecyclerView.LayoutManager).onSaveInstanceState())
         //outState.putParcelableArrayList(VIDEO_LIST_KEY, adapter.items)
         outState.putBoolean(ACTION_STATE_KEY, isInActionMode())
+        outState.putBoolean("isInSearchMode", isInSearchMode)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        if (!isInSearchMode) {
+            inflater.inflate(R.menu.menu_grid, menu)
+        } else {
+            inflater.inflate(R.menu.menu_search, menu)
+        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        viewModel.loadDetailsSwitchState(menu.findItem(R.id.action_change_mode))
+        if (!isInSearchMode) {
+            viewModel.loadDetailsSwitchState(menu.findItem(R.id.action_change_mode))
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -205,6 +228,14 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                         filterFragment.dismissAllowingStateLoss()
                     }
                 }
+                true
+            }
+            R.id.menu_reset -> {
+                unit.resetItems()
+                true
+            }
+            R.id.menu_save -> {
+                viewModel.saveVideos(unit.getSelectedVideos())
                 true
             }
             else -> super.onOptionsItemSelected(item)

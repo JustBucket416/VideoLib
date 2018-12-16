@@ -9,6 +9,7 @@ import justbucket.videolib.data.mapper.mapToDataEntities
 import justbucket.videolib.data.mapper.mapToDomain
 import justbucket.videolib.data.model.FilterEntity
 import justbucket.videolib.data.model.LinkEntity
+import justbucket.videolib.data.model.VideoEntity
 import justbucket.videolib.data.remote.MemoryRepository
 import justbucket.videolib.data.remote.YoutubeRepository
 import justbucket.videolib.domain.exception.Failure
@@ -115,6 +116,14 @@ class VideoRepositoryImpl @Inject constructor(
             }
         }
         return true
+    }
+
+    override suspend fun saveVideo(video: Video) {
+        val (videoEntity, tags) = video.mapToDataEntities()
+        val id = videoDatabase.videoDao().insertVideo(VideoEntity(null, videoEntity.sourceId, videoEntity.title, videoEntity.videoPath, videoEntity.thumbPath))
+        tags.forEach {
+            videoDatabase.linkDao().insertLink(LinkEntity(id, it.id!!))
+        }
     }
 
     private inner class VideoObserver(private val filter: Filter,
