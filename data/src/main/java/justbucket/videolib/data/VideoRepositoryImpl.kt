@@ -85,14 +85,13 @@ class VideoRepositoryImpl @Inject constructor(
         }.filter { checkVideo(filterEntity, it) }
     }
 
-    override suspend fun subscribeToVideos(onNext: (List<Video>) -> Unit, filter: Filter, coroutineContext: CoroutineContext) {
+    override suspend fun subscribeToVideos(onNext: (List<Video>) -> Unit, filter: Filter, coroutineContext: CoroutineContext) =
         with(videoDatabase.invalidationTracker) {
             val observer = VideoObserver(filter, onNext, coroutineContext)
             addObserver(observer)
             removeObserver(lastObserver)
             lastObserver = observer
         }
-    }
 
     override suspend fun loadVideosByTempTag(text: String): Either<Failure, List<Video>> {
         return youtubeRepository.loadTempVideos(text)

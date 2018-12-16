@@ -67,9 +67,9 @@ class YoutubeRepositoryImpl @Inject constructor(
     override suspend fun loadTempVideos(text: String): Either<Failure, List<Video>> {
         val response = youtubeAPI.getTempVideos(query = text).execute()
         return if (response.isSuccessful) {
-            Either.Right(response.body()?.items?.map { Video(-1,
+            Either.Right(response.body()?.items?.filter { it.id.videoId != null }?.map { Video(-1,
                     it.snippet.title,
-                    "https://www.youtube.com/watch?v=${it.id.getOrDie("videoId")}",
+                    "https://www.youtube.com/watch?v=${it.id.videoId.getOrDie("videoId $it")}",
                     it.snippet.thumbnails.medium.url,
                     1,
                     emptyList()) }!!)

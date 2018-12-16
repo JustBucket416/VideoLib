@@ -91,7 +91,7 @@ class GridViewModel @Inject constructor(
     fun deleteVideos(videos: List<VideoPres>) {
         for ((index, videoPres) in videos.withIndex()) {
             deleteVideo.execute({
-                if (index == videos.size - 1) fetchVideos()
+                if (index == videos.size) fetchVideos()
             }, DeleteVideo.Params.createParams(videoPres.mapToDomain()))
         }
     }
