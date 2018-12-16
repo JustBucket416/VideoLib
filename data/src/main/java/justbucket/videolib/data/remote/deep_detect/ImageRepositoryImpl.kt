@@ -10,7 +10,7 @@ class ImageRepositoryImpl @Inject constructor(private val ddapi: DDApi): ImageRe
     override suspend fun getTags(body: RequestBody): Either<Failure, ArrayList<String>> {
         val response =  ddapi.uploadFileImage(body).execute()
         return if (response.isSuccessful){
-            Either.Right(ArrayList(response.body()?.tags!!))
+            Either.Right(ArrayList(response.body()?.get(0)?.tags!!))
         } else{
             Either.Left(Failure.NetworkFailure)
         }

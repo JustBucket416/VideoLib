@@ -92,7 +92,8 @@ ext {
             dagger             : "com.google.dagger:dagger-android:$daggerVersion",
             daggerSupport      : "com.google.dagger:dagger-android-support:$daggerVersion",
             daggerProcessor    : "com.google.dagger:dagger-android-processor:$daggerVersion",
-            daggerCompiler     : "com.google.dagger:dagger-compiler:$daggerVersion"
+            daggerCompiler     : "com.google.dagger:dagger-compiler:$daggerVersion",
+            okhttp     : "com.squareup.okhttp3:okhttp:$okHttpVersion"
     ]
 
     appTestDependencies = [
