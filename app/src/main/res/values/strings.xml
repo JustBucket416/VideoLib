@@ -46,4 +46,6 @@
     <string name="apply">Apply</string>
     <string name="error_no_videos_found">No videos found</string>
     <string name="please_wait">Please, wait</string>
+    <string name="photo_description">Take a photo</string>
+    <string name="upload_photo">Upload photo</string>
 </resources>

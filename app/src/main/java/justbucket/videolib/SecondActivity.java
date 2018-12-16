@@ -63,6 +63,13 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_search, menu);
+        return true;
+    }
+
+    @Override
     public void onBackPressed() {
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             if (fragment.getChildFragmentManager().getBackStackEntryCount() > 1) {

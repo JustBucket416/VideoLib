@@ -65,6 +65,7 @@ public class MainActivityNew extends AppCompatActivity {
                     requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             1);
                 }
+                setProgressState(true);
                 openGallery();
             }
         });
@@ -90,7 +91,7 @@ public class MainActivityNew extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        progressBarContainer.setVisibility(View.VISIBLE);
+        setProgressState(true);
         if (resultCode == RESULT_OK){
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 Bundle extras = data.getExtras();
@@ -116,7 +117,6 @@ public class MainActivityNew extends AppCompatActivity {
                 }
             }
         }
-        progressBarContainer.setVisibility(View.GONE);
     }
 
     private void showToast(String msg){
@@ -125,7 +125,7 @@ public class MainActivityNew extends AppCompatActivity {
 
     private void startSecondActivity(@NonNull List<String> bagTags) {
         List<String> tags = new ArrayList<>();
-        for (String badTag : bagTags) {
+        for (String badTag: bagTags) {
             tags.add(badTag.split(",")[0]);
         }
         Intent intent = SecondActivity.newIntent(this, tags);
@@ -141,13 +141,13 @@ public class MainActivityNew extends AppCompatActivity {
                 either.either(new Function1<Failure, Object>() {
                     @Override
                     public Object invoke(Failure failure) {
-                        progressBarContainer.setVisibility(View.GONE);
+                        setProgressState(false);
                         return null;
                     }
                 }, new Function1<ArrayList<String>, Object>() {
                     @Override
                     public Object invoke(ArrayList<String> strings) {
-                        progressBarContainer.setVisibility(View.GONE);
+                        setProgressState(false);
                         startSecondActivity(strings);
                         return null;
                     }
@@ -155,6 +155,10 @@ public class MainActivityNew extends AppCompatActivity {
                 return Unit.INSTANCE;
             }
         }, SearchByImage.Params.createParams(requestBody));
+    }
+
+    private void setProgressState(boolean isShowing){
+        progressBarContainer.setVisibility(isShowing ? View.VISIBLE : View.GONE);
     }
 
 }
