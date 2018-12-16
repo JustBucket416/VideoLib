@@ -35,6 +35,12 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustNothing">
         </activity>
+<activity
+            android:name=".SecondActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustNothing">
+        </activity>
 
         <activity android:name=".screens.main.presentation.view.MainActivityNew"
             android:theme="@style/AppTheme.NoActionBar"/>
