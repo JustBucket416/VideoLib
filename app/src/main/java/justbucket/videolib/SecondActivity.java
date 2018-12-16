@@ -18,14 +18,15 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import justbucket.videolib.fragment.GridFragment;
+import justbucket.videolib.fragment.BridgeFragment;
 
 public class SecondActivity extends AppCompatActivity {
 
+    private static final String TAG_KEY = "tag-key";
+    List<String> tags;
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private TabsAdapter mAdapter;
-    private static final String TAG_KEY = "tag-key";
 
     public static final Intent newIntent(Context context, List<String> strings) {
         Intent intent = new Intent(context, SecondActivity.class);
@@ -34,15 +35,23 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(TAG_KEY, (ArrayList<String>) tags);
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        List<String> tags = new ArrayList<>();
+        tags = new ArrayList<>();
         Intent startIntent = getIntent();
-        if(startIntent != null) {
+        if (startIntent != null) {
             tags = startIntent.getStringArrayListExtra(TAG_KEY);
+        } else if (savedInstanceState != null) {
+            tags = savedInstanceState.getStringArrayList(TAG_KEY);
         }
         mTabLayout = findViewById(R.id.tab_layout);
         mViewPager = findViewById(R.id.view_pager);
@@ -55,9 +64,20 @@ public class SecondActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater=getMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_grid, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            if (fragment.getChildFragmentManager().getBackStackEntryCount() > 1) {
+                fragment.getChildFragmentManager().popBackStack();
+                return;
+            }
+        }
+        super.onBackPressed();
     }
 
     private class TabsAdapter extends FragmentStatePagerAdapter {
@@ -69,9 +89,7 @@ public class SecondActivity extends AppCompatActivity {
             super(fm);
             titles = tags;
             for (String tag : tags) {
-                GridFragment fragment = new GridFragment();
-                mFragments.add(fragment);
-
+                mFragments.add(BridgeFragment.newInstance(tag));
             }
         }
 
@@ -91,5 +109,7 @@ public class SecondActivity extends AppCompatActivity {
             return mFragments.size();
         }
 
+
     }
+
 }
