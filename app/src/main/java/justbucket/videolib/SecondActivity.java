@@ -25,7 +25,6 @@ public class SecondActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private TabsAdapter mAdapter;
-    private SecondViewModel mSecondViewModel;
     private static final String TAG_KEY = "tag-key";
 
     public static final Intent newIntent(Context context, List<String> strings) {
