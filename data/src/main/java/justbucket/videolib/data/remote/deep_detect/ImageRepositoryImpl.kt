@@ -9,7 +9,7 @@ import javax.inject.Inject
 class ImageRepositoryImpl @Inject constructor(private val ddapi: DDApi): ImageRepository {
     override suspend fun getTags(stringBase64: ByteArray): Either<Failure, ArrayList<String>> {
         val ddRoot = DDRoot(
-                data = arrayListOf(stringBase64),
+                data = arrayListOf(),
                 parameters = DDRoot.Parameters(
                         DDRoot.Parameters.Input(),
                         DDRoot.Parameters.Mllib(),

@@ -54,4 +54,6 @@ interface VideoRepository {
 
     suspend fun subscribeToVideos(onNext: (List<Video>) -> Unit, filter: Filter, coroutineContext: CoroutineContext)
 
+    suspend fun loadVideosByTempTag(text: String): Either<Failure, List<Video>>
+
 }
