@@ -2,16 +2,14 @@ package justbucket.videolib.data.remote.deep_detect
 
 import justbucket.videolib.data.remote.deep_detect.model.CategoriesRoot
 import justbucket.videolib.data.remote.deep_detect.model.DDRoot
+import okhttp3.RequestBody
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.POST
-import retrofit2.http.Url
+import retrofit2.http.*
 
 interface DDApi {
 
+    @Multipart
     @POST
-    fun getTags(
-            @Url url: String = DDConstants.CLASSIFICATION_ENDPOINT,
-            @Body() body: DDRoot
-    ): Call<CategoriesRoot>
+    fun uploadFileImage(@Part("file\"; filename=\"img.png\" ") file: RequestBody): Call<CategoriesRoot>
+
 }
