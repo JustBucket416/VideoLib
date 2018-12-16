@@ -26,6 +26,7 @@ abstract class UseCase<out Type, in Params>(private val context: CoroutineContex
 
     protected abstract suspend fun run(params: Params? = null): Type
 
+    @JvmOverloads
     fun execute(onResult: ((Type) -> Unit)? = null, params: Params? = null) {
         val job = GlobalScope.async(context = Dispatchers.IO) { run(params) }
         GlobalScope.launch(context = context) { onResult?.invoke(job.await()) }
