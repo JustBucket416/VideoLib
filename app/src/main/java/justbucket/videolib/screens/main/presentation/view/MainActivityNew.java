@@ -10,10 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.View;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +19,13 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import justbucket.videolib.R;
+import justbucket.videolib.SecondActivity;
 import justbucket.videolib.domain.exception.Failure;
 import justbucket.videolib.domain.feature.ddsearch.SearchByImage;
 import justbucket.videolib.domain.functional.Either;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 import okhttp3.RequestBody;
-import justbucket.videolib.SecondActivity;
 
 public class MainActivityNew extends AppCompatActivity {
 
@@ -95,7 +93,7 @@ public class MainActivityNew extends AppCompatActivity {
                         startSecondActivity(strings);
                         return null;
                     }
-                })
+                });
                 return Unit.INSTANCE;
             }
         });
