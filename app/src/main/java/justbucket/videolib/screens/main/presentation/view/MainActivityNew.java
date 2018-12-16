@@ -75,7 +75,6 @@ public class MainActivityNew extends AppCompatActivity {
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
-
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
                 byte[] byteArray = byteArrayOutputStream .toByteArray();
@@ -83,13 +82,10 @@ public class MainActivityNew extends AppCompatActivity {
                 return;
             }
             if (requestCode == READ_REQUEST_CODE){
-                Uri uri = null;
                 if (data != null) {
                     try {
                         Uri imageUri = data.getData();
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                        System.out.println();
-
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                         byte[] byteArray = byteArrayOutputStream .toByteArray();
