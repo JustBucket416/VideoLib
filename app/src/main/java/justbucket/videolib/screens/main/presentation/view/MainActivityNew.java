@@ -33,12 +33,11 @@ import okhttp3.RequestBody;
 
 public class MainActivityNew extends AppCompatActivity {
 
+    static final int REQUEST_IMAGE_CAPTURE = 1;
     @Inject
     SearchByImage mSearchByImage;
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-
-    public static void start(Activity activity){
+    public static void start(Activity activity) {
         activity.startActivity(new Intent(activity, MainActivityNew.class));
     }
 
@@ -66,20 +65,20 @@ public class MainActivityNew extends AppCompatActivity {
 
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-            byte[] byteArray = byteArrayOutputStream .toByteArray();
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
 
             RequestBody pictureFormatted = RequestBody.create(MediaType.parse("image/*"), byteArray);
             MultipartBody.Part.createFormData("confidentialPicture", "confidentialPicture.jpg", pictureFormatted);
             requestTags(pictureFormatted);
             System.out.println();
-        }else{
+        } else {
 
         }
     }
 
     private void startSecondActivity(@NonNull List<String> bagTags) {
         List<String> tags = new ArrayList<>();
-        for (String badTag: bagTags) {
+        for (String badTag : bagTags) {
             tags.add(badTag.split(",")[0]);
         }
         Intent intent = SecondActivity.newIntent(this, tags);
@@ -98,7 +97,7 @@ public class MainActivityNew extends AppCompatActivity {
                 }, new Function1<ArrayList<String>, Object>() {
                     @Override
                     public Object invoke(ArrayList<String> strings) {
-//                        startSecondActivity(strings);
+                        startSecondActivity(strings);
                         return null;
                     }
                 });

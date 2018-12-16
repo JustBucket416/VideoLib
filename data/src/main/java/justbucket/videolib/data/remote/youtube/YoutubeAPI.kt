@@ -64,6 +64,6 @@ interface YoutubeAPI {
     fun getTempVideos(@Url url: String = SEARCH_URL,
                       @Query("part") part: String = PART,
                       @Query("maxResults") maxResults: Int = MAX_RESULTS,
-                      @Query("Q") query: String,
+                      @Query("q") query: String,
                       @Query("key") apiKey: String = TOKEN): Call<TempRoot>
 }

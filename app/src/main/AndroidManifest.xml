@@ -95,6 +95,8 @@
             android:enabled="true"
             android:exported="false"
             android:process=":mediaPlayerProcess" />
+        <activity android:name=".SecondActivity"
+                  android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

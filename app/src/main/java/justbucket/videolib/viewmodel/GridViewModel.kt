@@ -45,9 +45,8 @@ class GridViewModel @Inject constructor(
 
     override fun onCleared() {
         saveDetailsSwitchState()
-        if (!lastFilter.tags.any { it.id == -1L }) {
-            saveFilter.execute(params = SaveFilter.Params.createParams(lastFilter.mapToDomain()))
-        }
+
+
     }
 
     fun loadFilter() {

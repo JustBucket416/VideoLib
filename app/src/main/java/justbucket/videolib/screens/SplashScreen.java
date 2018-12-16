@@ -22,6 +22,7 @@ public class SplashScreen extends AppCompatActivity {
                     @Override
                     public void run() {
                         MainActivityNew.start(SplashScreen.this);
+                        finish();
                     }
                 }, DELAY);
 
