@@ -8,6 +8,7 @@ import justbucket.videolib.fragment.FilterFragment
 import justbucket.videolib.fragment.GridFragment
 import justbucket.videolib.fragment.ImagePagerFragment
 import justbucket.videolib.fragment.SelectTagsFragment
+import justbucket.videolib.screens.main.presentation.view.MainActivityNew
 import justbucket.videolib.service.ImportService
 import justbucket.videolib.service.MediaPlayerService
 
@@ -37,4 +38,7 @@ abstract class UIModule {
 
     @ContributesAndroidInjector
     abstract fun contributeMediaPlayerService(): MediaPlayerService
+
+    @ContributesAndroidInjector
+    abstract fun contributeMainActivityNew(): MainActivityNew
 }
