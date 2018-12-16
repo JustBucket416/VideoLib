@@ -169,11 +169,6 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
         outState.putBoolean(ACTION_STATE_KEY, isInActionMode())
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        inflater?.inflate(R.menu.menu_grid, menu)
-    }
-
     override fun onPrepareOptionsMenu(menu: Menu) {
         viewModel.loadDetailsSwitchState(menu.findItem(R.id.action_change_mode))
     }
