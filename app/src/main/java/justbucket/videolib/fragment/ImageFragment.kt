@@ -124,12 +124,12 @@ class ImageFragment : Fragment() {
         pager_icon_play.visibility = View.GONE
         pager_video.visibility = View.VISIBLE
         when (video.source) {
-            R.drawable.ic_storage -> {
+            0 -> {
                 pager_video.setVideoPath(video.videoPath)
                 if (position != null) pager_video.seekTo(position)
                 pager_video.start()
             }
-            R.drawable.ic_youtube -> {
+            1 -> {
                 var orientation = activity?.requestedOrientation
                         ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                 val rotation = (activity?.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.rotation
