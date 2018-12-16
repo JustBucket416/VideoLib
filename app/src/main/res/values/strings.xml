@@ -44,4 +44,5 @@
     <string name="reset">Reset</string>
     <string name="apply">Apply</string>
     <string name="error_no_videos_found">No videos found</string>
+    <string name="please_wait">Please, wait</string>
 </resources>

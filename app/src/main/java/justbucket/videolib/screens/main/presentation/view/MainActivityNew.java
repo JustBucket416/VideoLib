@@ -1,29 +1,21 @@
 package justbucket.videolib.screens.main.presentation.view;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.view.View;
+import android.widget.Toast;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import dagger.android.AndroidInjection;
 import justbucket.videolib.R;
 import justbucket.videolib.SecondActivity;
@@ -43,6 +35,7 @@ public class MainActivityNew extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int READ_REQUEST_CODE = 42;
+    private View progressBarContainer;
 
     public static void start(Activity activity){
         activity.startActivity(new Intent(activity, MainActivityNew.class));
@@ -72,10 +65,12 @@ public class MainActivityNew extends AppCompatActivity {
                 startActivityForResult(intent, READ_REQUEST_CODE);
             }
         });
+        progressBarContainer = findViewById(R.id.progressBarContainer);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        progressBarContainer.setVisibility(View.VISIBLE);
         if (resultCode == RESULT_OK){
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 Bundle extras = data.getExtras();
@@ -100,15 +95,16 @@ public class MainActivityNew extends AppCompatActivity {
                         byte[] byteArray = byteArrayOutputStream .toByteArray();
                         requestTags(byteArray);
                     }catch (Exception e){
-                        System.out.println();
+                        showToast("Error");
                     }
-
-
-
                 }
             }
         }
+        progressBarContainer.setVisibility(View.GONE);
+    }
 
+    private void showToast(String msg){
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private void startSecondActivity(@NonNull List<String> bagTags) {
@@ -123,21 +119,20 @@ public class MainActivityNew extends AppCompatActivity {
     private void requestTags(byte[] byteArray) {
         RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), byteArray);
         MultipartBody.Part.createFormData("confidentialPicture", "confidentialPicture.jpg", requestBody);
-
-
-
         mSearchByImage.execute(new Function1<Either<? extends Failure, ? extends ArrayList<String>>, Unit>() {
             @Override
             public Unit invoke(Either<? extends Failure, ? extends ArrayList<String>> either) {
                 either.either(new Function1<Failure, Object>() {
                     @Override
                     public Object invoke(Failure failure) {
+                        progressBarContainer.setVisibility(View.GONE);
                         return null;
                     }
                 }, new Function1<ArrayList<String>, Object>() {
                     @Override
                     public Object invoke(ArrayList<String> strings) {
-//                        startSecondActivity(strings);
+                        progressBarContainer.setVisibility(View.GONE);
+                        startSecondActivity(strings);
                         return null;
                     }
                 });
@@ -146,28 +141,4 @@ public class MainActivityNew extends AppCompatActivity {
         }, SearchByImage.Params.createParams(requestBody));
     }
 
-    private void requestTags(RequestBody requestBody) {
-        MultipartBody.Part.createFormData("confidentialPicture", "confidentialPicture.jpg", requestBody);
-
-
-
-        mSearchByImage.execute(new Function1<Either<? extends Failure, ? extends ArrayList<String>>, Unit>() {
-            @Override
-            public Unit invoke(Either<? extends Failure, ? extends ArrayList<String>> either) {
-                either.either(new Function1<Failure, Object>() {
-                    @Override
-                    public Object invoke(Failure failure) {
-                        return null;
-                    }
-                }, new Function1<ArrayList<String>, Object>() {
-                    @Override
-                    public Object invoke(ArrayList<String> strings) {
-//                        startSecondActivity(strings);
-                        return null;
-                    }
-                });
-                return Unit.INSTANCE;
-            }
-        }, SearchByImage.Params.createParams(requestBody));
-    }
 }
