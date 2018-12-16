@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import justbucket.videolib.fragment.GridFragment;
-import justbucket.videolib.screens.main.presentation.view.MainActivityNew;
 
 public class SecondActivity extends AppCompatActivity {
 
@@ -92,10 +91,5 @@ public class SecondActivity extends AppCompatActivity {
             return mFragments.size();
         }
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(this, MainActivityNew.class));
     }
 }

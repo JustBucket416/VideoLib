@@ -13,8 +13,8 @@
         android:paddingTop="@dimen/main_activity_top_margin"
         android:paddingEnd="@dimen/main_container_margin"
         android:paddingBottom="@dimen/main_activity_bottom_margin"
-        app:layout_constraintBottom_toTopOf="@+id/bottomTab"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <android.support.v7.widget.CardView
             android:id="@+id/photoContainer"
@@ -47,7 +47,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="photo description"
+                    android:text="@string/photo_description"
                     android:textColor="@color/colorAccent"
                     app:layout_constraintLeft_toLeftOf="@id/cameraIc"
                     app:layout_constraintRight_toRightOf="@id/cameraIc"
@@ -93,7 +93,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="photo description"
+                    android:text="@string/upload_photo"
                     android:textColor="@color/colorAccent"
                     app:layout_constraintLeft_toLeftOf="@id/uploadIc"
                     app:layout_constraintRight_toRightOf="@id/uploadIc"
@@ -102,52 +102,4 @@
 
         </android.support.v7.widget.CardView>
     </android.support.constraint.ConstraintLayout>
-
-    <LinearLayout
-        android:id="@+id/bottomTab"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:paddingLeft="@dimen/main_container_margin"
-        android:paddingRight="@dimen/main_container_margin"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/left_custom_tab"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="@dimen/icons_size"
-                android:layout_height="@dimen/icons_size"
-                android:src="@drawable/ic_video_call_black_24dp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/middle_custom_tag"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="@dimen/icons_size"
-                android:layout_height="@dimen/icons_size"
-                android:src="@drawable/ic_attach_file_24px"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/right_custom_tag"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="@dimen/icons_size"
-                android:layout_height="@dimen/icons_size"
-                android:src="@drawable/ic_clear_black_24dp"/>
-        </LinearLayout>
-    </LinearLayout>
-
-
-
 </android.support.constraint.ConstraintLayout>
