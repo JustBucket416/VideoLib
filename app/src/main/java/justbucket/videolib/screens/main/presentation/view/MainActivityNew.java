@@ -7,19 +7,21 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.view.View;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import justbucket.videolib.R;
+import justbucket.videolib.SecondActivity;
 import justbucket.videolib.domain.exception.Failure;
 import justbucket.videolib.domain.feature.ddsearch.SearchByImage;
 import justbucket.videolib.domain.functional.Either;
@@ -73,6 +75,15 @@ public class MainActivityNew extends AppCompatActivity {
         }else{
 
         }
+    }
+
+    private void startSecondActivity(@NonNull List<String> bagTags) {
+        List<String> tags = new ArrayList<>();
+        for (String badTag: bagTags) {
+            tags.add(badTag.split(",")[0]);
+        }
+        Intent intent = SecondActivity.newIntent(this, tags);
+        startActivity(intent);
     }
 
     private void requestTags(RequestBody requestBody) {
