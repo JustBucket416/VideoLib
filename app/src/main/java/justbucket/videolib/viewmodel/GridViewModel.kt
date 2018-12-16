@@ -108,9 +108,6 @@ class GridViewModel @Inject constructor(
             SwitchValues.SWITCH_PLAY_VIDEO -> {
                 item.setIcon(R.drawable.video_clip)
             }
-            SwitchValues.SWITCH_PLAY_AUDIO -> {
-                item.setIcon(R.drawable.ic_audiotrack)
-            }
         }
     }
 
@@ -127,9 +124,6 @@ class GridViewModel @Inject constructor(
                 }
                 SwitchValues.SWITCH_PLAY_VIDEO -> {
                     item.setIcon(R.drawable.video_clip)
-                }
-                SwitchValues.SWITCH_PLAY_AUDIO -> {
-                    item.setIcon(R.drawable.ic_audiotrack)
                 }
             }
         })

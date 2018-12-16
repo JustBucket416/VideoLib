@@ -3,6 +3,7 @@ package justbucket.videolib;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.MenuRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -70,6 +72,13 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        MenuCallback menuCallback = (MenuCallback) getSupportFragmentManager().getFragments().get(mViewPager.getCurrentItem()).getChildFragmentManager().getFragments().get(0);
+        menuCallback.onMenuItemClicked(item.getItemId());
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onBackPressed() {
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             if (fragment.getChildFragmentManager().getBackStackEntryCount() > 1) {
@@ -110,6 +119,10 @@ public class SecondActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    public interface MenuCallback {
+         void onMenuItemClicked(@MenuRes int id);
     }
 
 }

@@ -15,10 +15,7 @@ import android.support.v7.widget.RecyclerView
 import android.transition.TransitionInflater
 import android.view.*
 import com.dekoservidoni.omfm.OneMoreFabMenu
-import justbucket.videolib.GridUnit
-import justbucket.videolib.ImportActivity
-import justbucket.videolib.MainActivity
-import justbucket.videolib.R
+import justbucket.videolib.*
 import justbucket.videolib.actionmode.ActionModeHelper
 import justbucket.videolib.di.InjectedFragment
 import justbucket.videolib.extension.dialogBox
@@ -36,7 +33,7 @@ import kotlinx.android.synthetic.main.recycler_video_card.view.*
  * A [Fragment] subclass which acts as the main application fragment, offering video and
  * tags manipulation. Kinda like god object anti-pattern, in a sense. Should be refactored.
  */
-class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
+class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>(), SecondActivity.MenuCallback {
 
     companion object {
         private const val RECYCLER_LAYOUT_STATE_KEY = "recycler-state-key"
@@ -124,6 +121,7 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setHasOptionsMenu(true)
         postponeEnterTransition()
         prepareTransitions()
 
@@ -164,7 +162,6 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                                 viewModel.setTextTag(arguments?.getString(TAG_KEY)!!)
                             } else viewModel.loadFilter()
                         }
-                        setHasOptionsMenu(!isInSearchMode)
 
                         if (!isInSearchMode) {
                             fab.setOptionsClick(fabMenuListener)
@@ -195,8 +192,6 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (!isInSearchMode) {
             inflater.inflate(R.menu.menu_grid, menu)
-        } else {
-            inflater.inflate(R.menu.menu_search, menu)
         }
     }
 
@@ -228,14 +223,6 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
                         filterFragment.dismissAllowingStateLoss()
                     }
                 }
-                true
-            }
-            R.id.menu_reset -> {
-                unit.resetItems()
-                true
-            }
-            R.id.menu_save -> {
-                viewModel.saveVideos(unit.getSelectedVideos())
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -276,6 +263,17 @@ class GridFragment : InjectedFragment<List<VideoPres>, GridViewModel>() {
         grid_recycler.visibility = View.GONE
         grid_text_error.visibility = View.VISIBLE
         grid_text_error.text = message
+    }
+
+    override fun onMenuItemClicked(id: Int) {
+        when (id) {
+            R.id.menu_reset -> {
+                unit.resetItems()
+            }
+            R.id.menu_save -> {
+                viewModel.saveVideos(unit.getSelectedVideos())
+            }
+        }
     }
 
     fun getSwitchMode() = viewModel.switchMode

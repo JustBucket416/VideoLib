@@ -65,7 +65,6 @@ public class MainActivityNew extends AppCompatActivity {
                     requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             1);
                 }
-                setProgressState(true);
                 openGallery();
             }
         });
@@ -91,8 +90,8 @@ public class MainActivityNew extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        setProgressState(true);
         if (resultCode == RESULT_OK){
+            setProgressState(true);
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
@@ -105,11 +104,13 @@ public class MainActivityNew extends AppCompatActivity {
             if (requestCode == READ_REQUEST_CODE){
                 if (data != null) {
                     try {
+                        setProgressState(true);
                         Uri imageUri = data.getData();
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
                         byte[] byteArray = byteArrayOutputStream .toByteArray();
+                        setProgressState(false);
                         requestTags(byteArray);
                     }catch (Exception e){
                         showToast("Error");
