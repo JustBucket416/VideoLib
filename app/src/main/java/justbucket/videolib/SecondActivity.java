@@ -62,12 +62,6 @@ public class SecondActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_grid, menu);
-        return true;
-    }
 
     @Override
     public void onBackPressed() {
